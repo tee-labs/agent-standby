@@ -42,9 +42,6 @@ jobs:
         uses: actions/setup-node@v5
         with:
           node-version: "22"
-          cache: "npm"
-      - name: Install dependencies
-        run: npm ci
       - name: Setup configuration
         run: |
           mkdir -p ~/.config/opencode
