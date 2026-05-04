@@ -11,7 +11,7 @@ Initialize AI agent configuration, environment variables, and skills for CI and 
 `agent-standby` prepares your environment so AI agents can work effectively:
 
 1. **Syncs skills** — copies skill directories to the agent's config folder
-2. **Downloads config files** — fetches agent configuration (AGENTS.md, opencode.jsonc, oh-my-openagent.json) from GitHub Gists
+2. **Copies config files** — copies agent configuration (AGENTS.md, opencode.jsonc, oh-my-openagent.json) from the local `configs/` directory
 3. **Sets environment variables** — exports paths for downstream CI steps
 
 ## Installation
@@ -76,10 +76,10 @@ npx @mccxj/agent-standby --agent claude --skills /path/to/skills
 └─────────────────┘
 
 ┌─────────────────┐
-│  GitHub Gists    │  AGENTS.md, opencode.jsonc, oh-my-openagent.json
-│  (mccxj)         │
+│  Local Configs   │  ./configs/
+│  (your repo)     │  AGENTS.md, opencode.jsonc, oh-my-openagent.json
 └────────┬────────┘
-         │ download
+         │ copy
          ▼
 ┌─────────────────┐
 │  Opencode Config │  ~/.config/opencode/
@@ -100,11 +100,12 @@ npx @mccxj/agent-standby --agent claude --skills /path/to/skills
 .
 ├── action.yml              # GitHub Action definition
 ├── package.json            # npm package (bin: agent-standby)
+├── configs/                # Local agent config files (AGENTS.md, opencode.jsonc, oh-my-openagent.json)
 ├── src/
 │   ├── action-entry.js     # GitHub Actions entry point
 │   ├── cli-entry.js        # CLI entry point (commander)
 │   └── core/
-│       └── setup.js        # Core logic: skills sync, gist download
+│       └── setup.js        # Core logic: skills sync, config copy
 ├── skills/                 # Agent skills ecosystem
 │   ├── pua/                # Core PUA skill (Chinese big-tech rhetoric)
 │   ├── pua-en/             # English PIP (Western big-tech)

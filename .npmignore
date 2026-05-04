@@ -8,3 +8,4 @@ AGENTS.md
 
 # Do NOT ignore dist/ — it's needed for the GitHub Action
 # Do NOT ignore action.yml — it's needed for the GitHub Action
+# Do NOT ignore configs/ — local config files copied to ~/.config/opencode/ at runtime
