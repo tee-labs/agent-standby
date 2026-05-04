@@ -45,8 +45,6 @@ jobs:
           cache: "npm"
       - name: Install dependencies
         run: npm ci
-      - name: Setup configuration
-        uses: tee-labs/agent-standby@v0.1
       - name: Run opencode
         uses: anomalyco/opencode/github@latest
         env:
