@@ -2,7 +2,7 @@
 
 ## OVERVIEW
 
-`setup.js` (209 lines) — the single core module. Resolves config directories, copies skills, downloads gist configs, and writes GitHub Actions env vars.
+`setup.js` (173 lines) — the single core module. Resolves config directories, copies skills, copies local config files, and writes GitHub Actions env vars.
 
 ## KEY EXPORTS
 
@@ -10,8 +10,9 @@
 |--------|---------|
 | `setup(options)` | Main orchestrator — agentType, skillsPath → result object |
 | `resolveConfigDir(agentType)` | Maps agent type → `~/.opencode` or `~/.claude` |
-| `writeOpencodeConfig(configDir)` | Downloads gist files to `~/.config/opencode/` |
-| `CONFIG_FILES` | Array of `{url, filename}` — AGENTS.md, opencode.jsonc, oh-my-openagent.json |
+| `writeOpencodeConfig(configDir)` | Copies local config files to `~/.config/opencode/` |
+| `CONFIG_FILES` | Array of `{filename}` — AGENTS.md, opencode.jsonc, oh-my-openagent.json |
+| `getLocalConfigDir()` | Returns path to `configs/` directory (2 levels up from src/core/) |
 | `VALID_AGENT_TYPES` | `['opencode', 'claude']` |
 
 ## CONSTANTS
@@ -24,11 +25,11 @@
 1. Normalize agent type (validate against `VALID_AGENT_TYPES`)
 2. Resolve skills path (must exist, must be directory)
 3. Create config dir, copy skills → `<configDir>/skills/`
-4. Download gist config files → `~/.config/opencode/`
+4. Copy local config files from `configs/` → `~/.config/opencode/`
 5. If in GitHub Actions, write env vars (`AGENT_STANDBY_*`) to `GITHUB_ENV`
 
 ## GOTCHAS
 
-- `writeAgentConfig()` is **commented out** (line 170) — config comes from gists, not local generation
-- Gist downloads follow HTTP→HTTPS redirects
+- `writeAgentConfig()` is **commented out** (line 134) — config comes from local `configs/` directory, not generated
+- Config files are read from `configs/` (relative to project root) via `getLocalConfigDir()`
 - Home dir resolution: `HOME` → `USERPROFILE` → `HOMEDRIVE+HOMEPATH` → `os.homedir()`

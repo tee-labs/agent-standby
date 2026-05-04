@@ -1,0 +1,257 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "autoupdate": true,
+  "autoshare": false,
+  "compaction": {
+    "auto": true,
+    "prune": true,
+    "reserved": 4096
+  },
+  "experimental": {
+    "batch_tool": true,
+    "openTelemetry": false
+  },
+  "formatter": {
+    "prettier": {
+      "command": ["npx", "prettier", "--write", "--config", "./.prettierrc", "$FILE"],
+      "extensions": [".js", ".ts", ".jsx", ".tsx", ".json", ".jsonc", ".css", ".md", ".yml", ".yaml"]
+    }
+  },
+  "logLevel": "DEBUG",
+  // "enabled_providers": ["x-openai", "x-google", "x-anthropic"],
+  "small_model": "x-openai/modelscope/deepseek-ai/DeepSeek-V3.2",
+  "provider": {
+    "x-openai": {
+      "models": {
+        "modelscope/deepseek-ai/DeepSeek-V3.2": {
+          "name": "modelscope/deepseek-ai/DeepSeek-V3.2",
+          "modalities": {
+            "input": ["text"],
+            "output": ["text"]
+          }
+        },
+        "MiniMax/MiniMax-M2.5": {
+          "name": "MiniMax/MiniMax-M2.5",
+          "modalities": {
+            "input": ["text"],
+            "output": ["text"]
+          }
+        },
+        "MiniMax/MiniMax-M2.7": {
+          "name": "MiniMax/MiniMax-M2.7",
+          "modalities": {
+            "input": ["text", "image"],
+            "output": ["text"]
+          }
+        },
+        "moonshotai/Kimi-K2.5": {
+          "name": "moonshotai/Kimi-K2.5",
+          "modalities": {
+            "input": ["text", "image"],
+            "output": ["text"]
+          }
+        },
+        "ZhipuAI/GLM-5": {
+          "name": "ZhipuAI/GLM-5",
+          "modalities": {
+            "input": ["text", "image"],
+            "output": ["text"]
+          }
+        },
+        "ZhipuAI/GLM-5.1": {
+          "name": "ZhipuAI/GLM-5.1",
+          "modalities": {
+            "input": ["text", "image"],
+            "output": ["text"]
+          }
+        },
+        "LongCat-Flash-Chat": {
+          "name": "LongCat-Flash-Chat",
+          "modalities": {
+            "input": ["text"],
+            "output": ["text"]
+          }
+        },
+        "LongCat-Flash-Thinking": {
+          "name": "LongCat-Flash-Thinking",
+          "modalities": {
+            "input": ["text"],
+            "output": ["text"]
+          }
+        },
+        "LongCat-Flash-Lite": {
+          "name": "LongCat-Flash-Lite",
+          "modalities": {
+            "input": ["text"],
+            "output": ["text"]
+          }
+        },
+        "LongCat-Pro-Preview": {
+          "name": "LongCat-Pro-Preview",
+          "modalities": {
+            "input": ["text"],
+            "output": ["text"]
+          }
+        },
+        "LongCat-Flash-Chat-2602-Exp": {
+          "name": "LongCat-Flash-Chat-2602-Exp",
+          "modalities": {
+            "input": ["text"],
+            "output": ["text"]
+          }
+        },
+        "Sphynx": {
+          "name": "Sphynx",
+          "modalities": {
+            "input": ["text", "image"],
+            "output": ["text"]
+          }
+        },
+        "z-ai/glm4.7": {
+          "name": "z-ai/glm4.7",
+          "modalities": {
+            "input": ["text"],
+            "output": ["text"]
+          }
+        },
+        "z-ai/glm5": {
+          "name": "z-ai/glm5",
+          "modalities": {
+            "input": ["text", "image"],
+            "output": ["text"]
+          }
+        },
+        "z-ai/glm-5.1": {
+          "name": "z-ai/glm-5.1",
+          "modalities": {
+            "input": ["text", "image"],
+            "output": ["text"]
+          }
+        },
+        "deepseek-ai/DeepSeek-V4-Flash": {
+          "name": "deepseek-ai/DeepSeek-V4-Flash",
+          "modalities": {
+            "input": ["text"],
+            "output": ["text"]
+          }
+        },
+        "qwen/qwen3-coder-480b-a35b-instruct": {
+          "name": "qwen/qwen3-coder-480b-a35b-instruct",
+          "modalities": {
+            "input": ["text"],
+            "output": ["text"]
+          }
+        },
+        "qwen/qwen3.5-397b-a17b": {
+          "name": "qwen/qwen3.5-397b-a17b",
+          "modalities": {
+            "input": ["text"],
+            "output": ["text"]
+          }
+        },
+        "qwen/qwen3.5-122b-a10b": {
+          "name": "qwen/qwen3.5-122b-a10b",
+          "modalities": {
+            "input": ["text"],
+            "output": ["text"]
+          }
+        },
+        "minimaxai/minimax-m2.5": {
+          "name": "minimaxai/minimax-m2.5",
+          "modalities": {
+            "input": ["text", "image"],
+            "output": ["text"]
+          }
+        },
+        "minimaxai/minimax-m2.7": {
+          "name": "minimaxai/minimax-m2.7",
+          "modalities": {
+            "input": ["text", "image"],
+            "output": ["text"]
+          }
+        },
+        "moonshotai/kimi-k2.5": {
+          "name": "moonshotai/kimi-k2.5",
+          "modalities": {
+            "input": ["text", "image"],
+            "output": ["text"]
+          }
+        },
+        "minimax-m2.7": {
+          "name": "minimax-m2.7",
+          "modalities": {
+            "input": ["text", "image"],
+            "output": ["text"]
+          }
+        },
+        "glm-5.1": {
+          "name": "glm-5.1",
+          "modalities": {
+            "input": ["text", "image"],
+            "output": ["text"]
+          }
+        },
+        "glm-5": {
+          "name": "glm-5",
+          "modalities": {
+            "input": ["text", "image"],
+            "output": ["text"]
+          }
+        },
+        "qwen3.5:397b": {
+          "name": "qwen3.5:397b",
+          "modalities": {
+            "input": ["text"],
+            "output": ["text"]
+          }
+        },
+        "qwen3-coder:480b": {
+          "name": "qwen3-coder:480b",
+          "modalities": {
+            "input": ["text"],
+            "output": ["text"]
+          }
+        },
+        "kimi-k2.6": {
+          "name": "kimi-k2.6",
+          "modalities": {
+            "input": ["text", "image"],
+            "output": ["text"]
+          }
+        },
+        "deepseek-v4-flash": {
+          "name": "deepseek-v4-flash",
+          "modalities": {
+            "input": ["text"],
+            "output": ["text"]
+          }
+        },
+        "ark-code-latest": {
+          "name": "ark-code-latest",
+          "modalities": {
+            "input": ["text", "image"],
+            "output": ["text"]
+          }
+        }
+      },
+      "npm": "@ai-sdk/openai-compatible",
+      "options": {
+        "apiKey": "{env:API_KEY}",
+        "baseURL": "https://airfly.dpdns.org/v1"
+      }
+    }
+  },
+  "plugin": ["oh-my-openagent@latest", "@tarquinen/opencode-dcp@latest"],
+  "mcp": {
+    "tavily": {
+      "type": "remote",
+      "url": "https://mcp.tavily.com/mcp/?tavilyApiKey={env:TAVILY_API_KEY}",
+      "enabled": true
+    },
+    "context7": {
+      "type": "local",
+      "command": ["npx", "-y", "@upstash/context7-mcp", "--api-key", "{env:CONTEXT7_API_KEY}"],
+      "enabled": true
+    }
+  }
+}

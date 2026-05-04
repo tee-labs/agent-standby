@@ -3,8 +3,6 @@
 const fs = require('fs');
 const path = require('path');
 const os = require('os');
-const https = require('https');
-const http = require('http');
 
 const VALID_AGENT_TYPES = ['opencode', 'claude'];
 
@@ -16,19 +14,14 @@ const AGENT_CONFIG_DIRS = {
 const OPENCODE_CONFIG_DIR_NAME = '.config/opencode';
 
 const CONFIG_FILES = [
-  {
-    url: 'https://gist.githubusercontent.com/mccxj/c23c72d3b4e891dd36866c2b32eda3d8/raw/AGENTS.md',
-    filename: 'AGENTS.md',
-  },
-  {
-    url: 'https://gist.githubusercontent.com/mccxj/1d5e8c7f107af7db59a2c2ace6bd949c/raw/opencode.jsonc',
-    filename: 'opencode.jsonc',
-  },
-  {
-    url: 'https://gist.githubusercontent.com/mccxj/6698d7e99d2eda81602fd276e03a200d/raw/oh-my-openagent.json',
-    filename: 'oh-my-openagent.json',
-  },
+  { filename: 'AGENTS.md' },
+  { filename: 'opencode.jsonc' },
+  { filename: 'oh-my-openagent.json' },
 ];
+
+function getLocalConfigDir() {
+  return path.join(__dirname, '..', '..', 'configs');
+}
 
 function resolveConfigDir(agentType) {
   const home = getHomeDir();
@@ -117,45 +110,18 @@ function writeGitHubEnv(envVars) {
   fs.appendFileSync(githubEnv, lines.join(os.EOL) + os.EOL, 'utf-8');
 }
 
-function downloadFile(url) {
-  return new Promise((resolve, reject) => {
-    const mod = url.startsWith('https') ? https : http;
-    mod
-      .get(url, (response) => {
-        if (
-          response.statusCode >= 300 &&
-          response.statusCode < 400 &&
-          response.headers.location
-        ) {
-          return downloadFile(response.headers.location).then(resolve, reject);
-        }
-        if (response.statusCode !== 200) {
-          return reject(
-            new Error(`Download failed with status ${response.statusCode}: ${url}`)
-          );
-        }
-        const chunks = [];
-        response.on('data', (chunk) => chunks.push(chunk));
-        response.on('end', () => resolve(Buffer.concat(chunks).toString('utf-8')));
-        response.on('error', reject);
-      })
-      .on('error', reject);
-  });
-}
-
-async function writeOpencodeConfig(configDir) {
+function writeOpencodeConfig(configDir) {
   fs.mkdirSync(configDir, { recursive: true });
 
   for (const file of CONFIG_FILES) {
+    const srcPath = path.join(getLocalConfigDir(), file.filename);
     const destPath = path.join(configDir, file.filename);
-    try {
-      const content = await downloadFile(file.url);
-      fs.writeFileSync(destPath, content, 'utf-8');
-    } catch (err) {
+    if (!fs.existsSync(srcPath)) {
       throw new Error(
-        `Failed to download ${file.filename} from ${file.url}: ${err.message}`
+        `Local config file not found: ${srcPath}`
       );
     }
+    fs.copyFileSync(srcPath, destPath);
   }
 }
 
@@ -170,7 +136,7 @@ async function setup(options = {}) {
   //writeAgentConfig(configDir, agentType);
 
   const opencodeConfigDir = path.join(getHomeDir(), OPENCODE_CONFIG_DIR_NAME);
-  await writeOpencodeConfig(opencodeConfigDir);
+  writeOpencodeConfig(opencodeConfigDir);
 
   const result = {
     agentType,
@@ -201,9 +167,9 @@ module.exports = {
   writeGitHubEnv,
   writeOpencodeConfig,
   copyDirectory,
-  downloadFile,
   VALID_AGENT_TYPES,
   AGENT_CONFIG_DIRS,
   OPENCODE_CONFIG_DIR_NAME,
   CONFIG_FILES,
+  getLocalConfigDir,
 };

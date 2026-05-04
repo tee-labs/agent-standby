@@ -13,6 +13,7 @@
 ├── action.yml              # GitHub Action definition (node20, dist/index.js)
 ├── package.json            # npm package, bin: agent-standby → src/cli-entry.js
 ├── .opencode.json          # MCP server config (code-review-graph)
+├── configs/                # Local agent config files (AGENTS.md, opencode.jsonc, oh-my-openagent.json)
 ├── src/
 │   ├── action-entry.js     # GitHub Actions entry (@actions/core)
 │   ├── cli-entry.js        # CLI entry (commander)
@@ -47,7 +48,7 @@
 | Change CLI behavior | `src/cli-entry.js` | Uses commander, entry via `-a` (agent) and `-s` (skills) |
 | Change Action behavior | `src/action-entry.js` | Uses @actions/core, reads `agent_type` and `skills_path` inputs |
 | Core setup logic | `src/core/setup.js` | Config dir resolution, skills copy, gist download, env vars |
-| Add config file downloads | `src/core/setup.js` → `CONFIG_FILES` | Array of `{url, filename}` fetched via HTTPS |
+| Add config file downloads | `src/core/setup.js` → `CONFIG_FILES` | Array of `{filename}` copied from `configs/` directory |
 | CI pipeline | `.github/workflows/opencode.yml` | Triggers on `/oc` comment, installs code-review-graph |
 | Release pipeline | `.github/workflows/release.yml` | Builds dist/, publishes to npm on GitHub release |
 
@@ -59,7 +60,7 @@
 - **Skills**: Each has YAML frontmatter with `name`, `description`, `license: MIT`
 - **Skills sync**: Copied to `~/.opencode/skills/` or `~/.claude/skills/` based on agent type
 - **Config dirs**: opencode → `~/.opencode/`, claude → `~/.claude/`
-- **Gist configs**: Downloaded from `gist.githubusercontent.com/mccxj/` to `~/.config/opencode/`
+- **Config files**: Copied from `configs/` directory to `~/.config/opencode/`
 
 ## ANTI-PATTERNS
 
@@ -80,7 +81,7 @@ npx agent-standby    # run CLI locally
 
 - `dist/` is committed to repo (Action users need it) but `src/` is npmignored
 - `.claude/skills/` mirrors `skills/` for Claude compatibility — keep in sync
-- `writeAgentConfig()` in setup.js is commented out (line 170) — config comes from gists
+- `writeAgentConfig()` in setup.js is commented out (line 134) — config comes from local `configs/` directory
 - `skills/pua/references/` has 20+ methodology files — only read when PUA skill is active
 
 <!-- code-review-graph MCP tools -->
