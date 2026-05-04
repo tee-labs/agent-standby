@@ -25652,6 +25652,8 @@ module.exports = {
 const fs = __nccwpck_require__(9896);
 const path = __nccwpck_require__(6928);
 const os = __nccwpck_require__(857);
+const https = __nccwpck_require__(5692);
+const http = __nccwpck_require__(8611);
 
 const VALID_AGENT_TYPES = ['opencode', 'claude'];
 
@@ -25659,6 +25661,23 @@ const AGENT_CONFIG_DIRS = {
   opencode: '.opencode',
   claude: '.claude',
 };
+
+const OPENCODE_CONFIG_DIR_NAME = '.config/opencode';
+
+const CONFIG_FILES = [
+  {
+    url: 'https://gist.githubusercontent.com/mccxj/c23c72d3b4e891dd36866c2b32eda3d8/raw/AGENTS.md',
+    filename: 'AGENTS.md',
+  },
+  {
+    url: 'https://gist.githubusercontent.com/mccxj/1d5e8c7f107af7db59a2c2ace6bd949c/raw/opencode.jsonc',
+    filename: 'opencode.jsonc',
+  },
+  {
+    url: 'https://gist.githubusercontent.com/mccxj/6698d7e99d2eda81602fd276e03a200d/raw/oh-my-openagent.json',
+    filename: 'oh-my-openagent.json',
+  },
+];
 
 function resolveConfigDir(agentType) {
   const home = getHomeDir();
@@ -25747,7 +25766,49 @@ function writeGitHubEnv(envVars) {
   fs.appendFileSync(githubEnv, lines.join(os.EOL) + os.EOL, 'utf-8');
 }
 
-function setup(options = {}) {
+function downloadFile(url) {
+  return new Promise((resolve, reject) => {
+    const mod = url.startsWith('https') ? https : http;
+    mod
+      .get(url, (response) => {
+        if (
+          response.statusCode >= 300 &&
+          response.statusCode < 400 &&
+          response.headers.location
+        ) {
+          return downloadFile(response.headers.location).then(resolve, reject);
+        }
+        if (response.statusCode !== 200) {
+          return reject(
+            new Error(`Download failed with status ${response.statusCode}: ${url}`)
+          );
+        }
+        const chunks = [];
+        response.on('data', (chunk) => chunks.push(chunk));
+        response.on('end', () => resolve(Buffer.concat(chunks).toString('utf-8')));
+        response.on('error', reject);
+      })
+      .on('error', reject);
+  });
+}
+
+async function writeOpencodeConfig(configDir) {
+  fs.mkdirSync(configDir, { recursive: true });
+
+  for (const file of CONFIG_FILES) {
+    const destPath = path.join(configDir, file.filename);
+    try {
+      const content = await downloadFile(file.url);
+      fs.writeFileSync(destPath, content, 'utf-8');
+    } catch (err) {
+      throw new Error(
+        `Failed to download ${file.filename} from ${file.url}: ${err.message}`
+      );
+    }
+  }
+}
+
+async function setup(options = {}) {
   const agentType = normalizeAgentType(options.agentType);
   const skillsPath = resolveSkillsPath(options.skillsPath);
   const configDir = resolveConfigDir(agentType);
@@ -25757,11 +25818,15 @@ function setup(options = {}) {
   copyDirectory(skillsPath, skillsDest);
   writeAgentConfig(configDir, agentType);
 
+  const opencodeConfigDir = path.join(getHomeDir(), OPENCODE_CONFIG_DIR_NAME);
+  await writeOpencodeConfig(opencodeConfigDir);
+
   const result = {
     agentType,
     configDir,
     skillsSource: skillsPath,
     skillsDestination: skillsDest,
+    opencodeConfigDir,
     isCI: isGitHubActions(),
   };
 
@@ -25783,9 +25848,13 @@ module.exports = {
   normalizeAgentType,
   isGitHubActions,
   writeGitHubEnv,
+  writeOpencodeConfig,
   copyDirectory,
+  downloadFile,
   VALID_AGENT_TYPES,
   AGENT_CONFIG_DIRS,
+  OPENCODE_CONFIG_DIR_NAME,
+  CONFIG_FILES,
 };
 
 
@@ -27718,7 +27787,7 @@ async function run() {
 
     core.info(`Agent Standby: Setting up agent "${agentType}" with skills from "${skillsPath}"`);
 
-    const result = setup({ agentType, skillsPath });
+    const result = await setup({ agentType, skillsPath });
 
     core.setOutput('config_dir', result.configDir);
     core.setOutput('skills_dir', result.skillsDestination);
@@ -27726,6 +27795,7 @@ async function run() {
 
     core.info(`Config directory: ${result.configDir}`);
     core.info(`Skills synced to: ${result.skillsDestination}`);
+    core.info(`Opencode config: ${result.opencodeConfigDir}`);
     core.info(`Environment: ${result.isCI ? 'GitHub Actions' : 'Local'}`);
 
     core.info('Agent Standby setup completed successfully.');

@@ -22,9 +22,9 @@ program
     'Path to skills directory',
     './skills'
   )
-  .action((options) => {
+  .action(async (options) => {
     try {
-      const result = setup({
+      const result = await setup({
         agentType: options.agent,
         skillsPath: options.skills,
       });
@@ -35,6 +35,7 @@ program
       console.log(`  Config directory: ${result.configDir}`);
       console.log(`  Skills source:    ${result.skillsSource}`);
       console.log(`  Skills synced:    ${result.skillsDestination}`);
+      console.log(`  Opencode config:  ${result.opencodeConfigDir}`);
       console.log(`  Environment:      ${result.isCI ? 'GitHub Actions' : 'Local'}`);
       console.log('');
     } catch (error) {
