@@ -1,0 +1,22 @@
+# Added by code-review-graph
+.code-review-graph/
+
+# Dependencies
+node_modules/
+
+# Build output (dist/ is committed for Action users)
+# dist/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Logs
+*.log
+npm-debug-lock.yaml
