@@ -44,6 +44,18 @@ jobs:
             git commit -m "chore: update dist/ bundle [skip ci]"
             git push
           fi
+          git tag -f latest
+          git push origin latest --force
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create Latest Release
+        uses: softprops/action-gh-release@v3
+        with:
+          tag_name: latest
+          name: Latest Build
+          make_latest: true
+          generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
