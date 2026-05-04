@@ -25816,7 +25816,7 @@ async function setup(options = {}) {
 
   fs.mkdirSync(configDir, { recursive: true });
   copyDirectory(skillsPath, skillsDest);
-  writeAgentConfig(configDir, agentType);
+  //writeAgentConfig(configDir, agentType);
 
   const opencodeConfigDir = path.join(getHomeDir(), OPENCODE_CONFIG_DIR_NAME);
   await writeOpencodeConfig(opencodeConfigDir);
