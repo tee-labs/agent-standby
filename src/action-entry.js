@@ -10,7 +10,7 @@ async function run() {
 
     core.info(`Agent Standby: Setting up agent "${agentType}" with skills from "${skillsPath}"`);
 
-    const result = setup({ agentType, skillsPath });
+    const result = await setup({ agentType, skillsPath });
 
     core.setOutput('config_dir', result.configDir);
     core.setOutput('skills_dir', result.skillsDestination);
@@ -18,6 +18,7 @@ async function run() {
 
     core.info(`Config directory: ${result.configDir}`);
     core.info(`Skills synced to: ${result.skillsDestination}`);
+    core.info(`Opencode config: ${result.opencodeConfigDir}`);
     core.info(`Environment: ${result.isCI ? 'GitHub Actions' : 'Local'}`);
 
     core.info('Agent Standby setup completed successfully.');
