@@ -1,0 +1,10 @@
+src/
+.github/
+.code-review-graph/
+node_modules/
+.gitignore
+AGENTS.md
+.opencode.json
+
+# Do NOT ignore dist/ — it's needed for the GitHub Action
+# Do NOT ignore action.yml — it's needed for the GitHub Action

@@ -1,0 +1,29 @@
+name: 'Agent Standby'
+description: 'Initialize AI agent configuration, environment variables, and skills for CI and local development'
+author: 'mccxj'
+
+inputs:
+  agent_type:
+    description: 'Agent type: opencode or claude'
+    required: false
+    default: 'opencode'
+  skills_path:
+    description: 'Path to the skills directory'
+    required: false
+    default: './skills'
+
+outputs:
+  config_dir:
+    description: 'Path to the agent config directory'
+  skills_dir:
+    description: 'Path to the synced skills directory'
+  agent_type:
+    description: 'The agent type that was configured'
+
+runs:
+  using: 'node20'
+  main: 'dist/index.js'
+
+branding:
+  icon: 'zap'
+  color: 'blue'
