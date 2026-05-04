@@ -45,6 +45,12 @@ jobs:
           cache: "npm"
       - name: Install dependencies
         run: npm ci
+      - name: Setup configuration
+        run: |
+          mkdir -p ~/.config/opencode
+          curl -sL https://gist.githubusercontent.com/mccxj/c23c72d3b4e891dd36866c2b32eda3d8/raw/AGENTS.md -o ~/.config/opencode/AGENTS.md
+          curl -sL https://gist.githubusercontent.com/mccxj/1d5e8c7f107af7db59a2c2ace6bd949c/raw/opencode.jsonc -o ~/.config/opencode/opencode.jsonc
+          curl -sL https://gist.githubusercontent.com/mccxj/6698d7e99d2eda81602fd276e03a200d/raw/oh-my-openagent.json -o ~/.config/opencode/oh-my-openagent.json
       - name: Run opencode
         uses: anomalyco/opencode/github@latest
         env:
@@ -52,4 +58,5 @@ jobs:
           TAVILY_API_KEY: ${{ secrets.TAVILY_API_KEY }}
           CONTEXT7_API_KEY: ${{ secrets.CONTEXT7_API_KEY }}
         with:
+          use_github_token: true
           model: ${{ secrets.DEFAULT_MODEL || 'x-openai/ark-code-latest' }}
