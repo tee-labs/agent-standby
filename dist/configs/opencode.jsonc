@@ -241,7 +241,7 @@
       }
     }
   },
-  "plugin": ["oh-my-openagent@latest", "@tarquinen/opencode-dcp@latest"],
+  "plugin": ["oh-my-openagent@latest", "@tarquinen/opencode-dcp@latest", "context-mode"],
   "mcp": {
     "tavily": {
       "type": "remote",
@@ -252,6 +252,10 @@
       "type": "local",
       "command": ["npx", "-y", "@upstash/context7-mcp", "--api-key", "{env:CONTEXT7_API_KEY}"],
       "enabled": true
+    },
+    "context-mode": {
+      "type": "local",
+      "command": ["context-mode"]
     }
   }
 }
