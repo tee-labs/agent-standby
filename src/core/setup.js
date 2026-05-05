@@ -3,6 +3,7 @@
 const fs = require('fs');
 const path = require('path');
 const os = require('os');
+const { execSync } = require('child_process');
 
 const VALID_AGENT_TYPES = ['opencode', 'claude'];
 
@@ -125,6 +126,20 @@ function writeOpencodeConfig(configDir) {
   }
 }
 
+function ensureContextMode() {
+  try {
+    execSync('context-mode --version', { stdio: 'pipe' });
+    return { installed: true, method: 'existing' };
+  } catch {}
+
+  try {
+    execSync('npm install -g context-mode', { stdio: 'inherit' });
+    return { installed: true, method: 'npm-global' };
+  } catch (err) {
+    return { installed: false, error: err.message };
+  }
+}
+
 async function setup(options = {}) {
   const agentType = normalizeAgentType(options.agentType);
   const skillsPath = resolveSkillsPath(options.skillsPath);
@@ -138,6 +153,8 @@ async function setup(options = {}) {
   const opencodeConfigDir = path.join(getHomeDir(), OPENCODE_CONFIG_DIR_NAME);
   writeOpencodeConfig(opencodeConfigDir);
 
+  const contextMode = ensureContextMode();
+
   const result = {
     agentType,
     configDir,
@@ -145,6 +162,7 @@ async function setup(options = {}) {
     skillsDestination: skillsDest,
     opencodeConfigDir,
     isCI: isGitHubActions(),
+    contextMode,
   };
 
   if (isGitHubActions()) {
@@ -167,6 +185,7 @@ module.exports = {
   writeGitHubEnv,
   writeOpencodeConfig,
   copyDirectory,
+  ensureContextMode,
   VALID_AGENT_TYPES,
   AGENT_CONFIG_DIRS,
   OPENCODE_CONFIG_DIR_NAME,

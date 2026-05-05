@@ -255,7 +255,7 @@
     },
     "context-mode": {
       "type": "local",
-      "command": ["context-mode"]
+      "command": ["npx", "-y", "context-mode"]
     }
   }
 }
