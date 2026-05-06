@@ -35,16 +35,11 @@ function resolveConfigDir(agentType) {
 }
 
 function getHomeDir() {
-  logger.info(`process.env.HOME is ${process.env.HOME}`);
-  logger.info(`process.env.USERPROFILE is ${process.env.USERPROFILE}`);
-  logger.info(`process.env.HOMEDRIVE is ${process.env.HOMEDRIVE}`);
-  logger.info(`process.env.HOMEPATH is ${process.env.HOMEPATH}`);
-  logger.info(`os.homedir() is ${os.homedir()}`);
-  // if (process.env.HOME) return process.env.HOME;
-  // if (process.env.USERPROFILE) return process.env.USERPROFILE;
-  // if (process.env.HOMEDRIVE && process.env.HOMEPATH) {
-  //   return process.env.HOMEDRIVE + process.env.HOMEPATH;
-  // }
+  if (process.env.HOME) return process.env.HOME;
+  if (process.env.USERPROFILE) return process.env.USERPROFILE;
+  if (process.env.HOMEDRIVE && process.env.HOMEPATH) {
+    return process.env.HOMEDRIVE + process.env.HOMEPATH;
+  }
   return os.homedir();
 }
 
@@ -60,18 +55,6 @@ function normalizeAgentType(agentType) {
     );
   }
   return normalized;
-}
-
-function resolveSkillsPath(skillsPath) {
-  const resolved = path.resolve(skillsPath || './skills');
-  if (!fs.existsSync(resolved)) {
-    throw new Error(`Skills path does not exist: ${resolved}`);
-  }
-  const stat = fs.statSync(resolved);
-  if (!stat.isDirectory()) {
-    throw new Error(`Skills path is not a directory: ${resolved}`);
-  }
-  return resolved;
 }
 
 function copyDirectory(src, dest) {
@@ -177,7 +160,7 @@ function ensureContextMode() {
 
 async function setup(options = {}) {
   const agentType = normalizeAgentType(options.agentType);
-  const skillsPath = resolveSkillsPath(options.skillsPath);
+  const skillsPath = options.skillsPath;
   const configDir = resolveConfigDir(agentType);
   const replaceEnv = options.replaceEnv === true;
 
@@ -218,7 +201,6 @@ async function setup(options = {}) {
 module.exports = {
   setup,
   resolveConfigDir,
-  resolveSkillsPath,
   normalizeAgentType,
   isGitHubActions,
   writeGitHubEnv,

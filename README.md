@@ -31,7 +31,6 @@ With custom options:
   uses: tee-labs/agent-standby@latest
   with:
     agent_type: claude     # or "opencode" (default)
-    skills_path: ./skills  # path to your skills directory
     replace_env: true      # replace {env:VAR} placeholders in config files
 ```
 

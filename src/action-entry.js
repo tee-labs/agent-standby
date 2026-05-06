@@ -4,6 +4,19 @@ const path = require('path');
 const { setup } = require('./core/setup');
 const logger = require('./core/logger');
 
+// Resolve the package root that ships the bundled skills/ directory.
+// When running from source (local dev) __dirname is src/, so go up one level.
+// When running from dist/ (ncc bundle inside node_modules) require.resolve
+// locates package.json next to dist/.
+// Fallback to __dirname-based resolution if require.resolve fails.
+let PACKAGE_ROOT;
+try {
+  PACKAGE_ROOT = path.dirname(require.resolve('@mccxj/agent-standby/package.json'));
+} catch {
+  PACKAGE_ROOT = path.join(__dirname, '..');
+}
+const DEFAULT_SKILLS_PATH = path.join(PACKAGE_ROOT, 'skills');
+
 function getArg(args, flag) {
   const idx = args.indexOf(flag);
   if (idx !== -1 && idx + 1 < args.length) return args[idx + 1];
@@ -19,28 +32,20 @@ async function run() {
     const args = process.argv.slice(2);
     const isCI = process.env.GITHUB_ACTIONS === 'true';
 
-    let agentType, skillsPath, replaceEnv;
+    let agentType, replaceEnv;
 
     if (isCI) {
       const core = require('@actions/core');
       agentType = core.getInput('agent_type') || 'opencode';
-      const skillsPathInput = core.getInput('skills_path');
-      skillsPath = skillsPathInput
-        ? skillsPathInput
-        : path.join(__dirname, '..', 'skills');
       replaceEnv = core.getBooleanInput('replace_env');
     } else {
       agentType = getArg(args, '--agent-type') || process.env.AGENT_TYPE || 'opencode';
-      const skillsPathInput = getArg(args, '--skills-path') || process.env.SKILLS_PATH;
-      skillsPath = skillsPathInput
-        ? skillsPathInput
-        : path.join(__dirname, '..', 'skills');
       replaceEnv = hasFlag(args, '--replace-env');
     }
 
-    logger.info(`Agent Standby: Setting up agent "${agentType}" with skills from "${skillsPath}"`);
+    logger.info(`Agent Standby: Setting up agent "${agentType}" with skills from "${DEFAULT_SKILLS_PATH}"`);
 
-    const result = await setup({ agentType, skillsPath, replaceEnv });
+    const result = await setup({ agentType, skillsPath: DEFAULT_SKILLS_PATH, replaceEnv });
 
     if (isCI) {
       const core = require('@actions/core');

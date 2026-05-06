@@ -8,7 +8,7 @@
 
 | Export | Purpose |
 |--------|---------|
-| `setup(options)` | Main orchestrator — agentType, skillsPath → result object |
+| `setup(options)` | Main orchestrator — agentType, skillsPath (from bundled package) → result object |
 | `resolveConfigDir(agentType)` | Maps agent type → `~/.opencode` or `~/.claude` |
 | `writeOpencodeConfig(configDir)` | Copies local config files to `~/.config/opencode/` |
 | `CONFIG_FILES` | Array of `{filename}` — AGENTS.md, opencode.jsonc, oh-my-openagent.json |

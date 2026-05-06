@@ -17,7 +17,7 @@ src/
 
 | File | Purpose | Key exports |
 |------|---------|-------------|
-| `action-entry.js` | GitHub Action entry via `@actions/core` | `run()` — reads `agent_type`/`skills_path` inputs, calls `setup()`, sets outputs |
+| `action-entry.js` | GitHub Action entry via `@actions/core` | `run()` — reads `agent_type` input, resolves bundled skills path, calls `setup()`, sets outputs |
 
 ## CONVENTIONS
 

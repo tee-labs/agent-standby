@@ -25751,16 +25751,11 @@ function resolveConfigDir(agentType) {
 }
 
 function getHomeDir() {
-  logger.info(`process.env.HOME is ${process.env.HOME}`);
-  logger.info(`process.env.USERPROFILE is ${process.env.USERPROFILE}`);
-  logger.info(`process.env.HOMEDRIVE is ${process.env.HOMEDRIVE}`);
-  logger.info(`process.env.HOMEPATH is ${process.env.HOMEPATH}`);
-  logger.info(`os.homedir() is ${os.homedir()}`);
-  // if (process.env.HOME) return process.env.HOME;
-  // if (process.env.USERPROFILE) return process.env.USERPROFILE;
-  // if (process.env.HOMEDRIVE && process.env.HOMEPATH) {
-  //   return process.env.HOMEDRIVE + process.env.HOMEPATH;
-  // }
+  if (process.env.HOME) return process.env.HOME;
+  if (process.env.USERPROFILE) return process.env.USERPROFILE;
+  if (process.env.HOMEDRIVE && process.env.HOMEPATH) {
+    return process.env.HOMEDRIVE + process.env.HOMEPATH;
+  }
   return os.homedir();
 }
 
@@ -25776,18 +25771,6 @@ function normalizeAgentType(agentType) {
     );
   }
   return normalized;
-}
-
-function resolveSkillsPath(skillsPath) {
-  const resolved = path.resolve(skillsPath || './skills');
-  if (!fs.existsSync(resolved)) {
-    throw new Error(`Skills path does not exist: ${resolved}`);
-  }
-  const stat = fs.statSync(resolved);
-  if (!stat.isDirectory()) {
-    throw new Error(`Skills path is not a directory: ${resolved}`);
-  }
-  return resolved;
 }
 
 function copyDirectory(src, dest) {
@@ -25893,7 +25876,7 @@ function ensureContextMode() {
 
 async function setup(options = {}) {
   const agentType = normalizeAgentType(options.agentType);
-  const skillsPath = resolveSkillsPath(options.skillsPath);
+  const skillsPath = options.skillsPath;
   const configDir = resolveConfigDir(agentType);
   const replaceEnv = options.replaceEnv === true;
 
@@ -25934,7 +25917,6 @@ async function setup(options = {}) {
 module.exports = {
   setup,
   resolveConfigDir,
-  resolveSkillsPath,
   normalizeAgentType,
   isGitHubActions,
   writeGitHubEnv,
@@ -27881,6 +27863,19 @@ const path = __nccwpck_require__(6928);
 const { setup } = __nccwpck_require__(416);
 const logger = __nccwpck_require__(4077);
 
+// Resolve the package root that ships the bundled skills/ directory.
+// When running from source (local dev) __dirname is src/, so go up one level.
+// When running from dist/ (ncc bundle inside node_modules) require.resolve
+// locates package.json next to dist/.
+// Fallback to __dirname-based resolution if require.resolve fails.
+let PACKAGE_ROOT;
+try {
+  PACKAGE_ROOT = path.dirname(require.resolve('@mccxj/agent-standby/package.json'));
+} catch {
+  PACKAGE_ROOT = path.join(__dirname, '..');
+}
+const DEFAULT_SKILLS_PATH = __nccwpck_require__.ab + "skills";
+
 function getArg(args, flag) {
   const idx = args.indexOf(flag);
   if (idx !== -1 && idx + 1 < args.length) return args[idx + 1];
@@ -27896,28 +27891,20 @@ async function run() {
     const args = process.argv.slice(2);
     const isCI = process.env.GITHUB_ACTIONS === 'true';
 
-    let agentType, skillsPath, replaceEnv;
+    let agentType, replaceEnv;
 
     if (isCI) {
       const core = __nccwpck_require__(7484);
       agentType = core.getInput('agent_type') || 'opencode';
-      const skillsPathInput = core.getInput('skills_path');
-      skillsPath = skillsPathInput
-        ? skillsPathInput
-        : __nccwpck_require__.ab + "skills";
       replaceEnv = core.getBooleanInput('replace_env');
     } else {
       agentType = getArg(args, '--agent-type') || process.env.AGENT_TYPE || 'opencode';
-      const skillsPathInput = getArg(args, '--skills-path') || process.env.SKILLS_PATH;
-      skillsPath = skillsPathInput
-        ? skillsPathInput
-        : __nccwpck_require__.ab + "skills";
       replaceEnv = hasFlag(args, '--replace-env');
     }
 
-    logger.info(`Agent Standby: Setting up agent "${agentType}" with skills from "${skillsPath}"`);
+    logger.info(`Agent Standby: Setting up agent "${agentType}" with skills from "${DEFAULT_SKILLS_PATH}"`);
 
-    const result = await setup({ agentType, skillsPath, replaceEnv });
+    const result = await setup({ agentType, skillsPath: __nccwpck_require__.ab + "skills", replaceEnv });
 
     if (isCI) {
       const core = __nccwpck_require__(7484);

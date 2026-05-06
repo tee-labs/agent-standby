@@ -44,7 +44,7 @@
 | Task | Location | Notes |
 |------|----------|-------|
 | Add/modify skills | `skills/<name>/SKILL.md` | Each skill has frontmatter (name, description, license) |
-| Change Action behavior | `src/action-entry.js` | Uses @actions/core, reads `agent_type` and `skills_path` inputs |
+| Change Action behavior | `src/action-entry.js` | Uses @actions/core, reads `agent_type` input, resolves bundled skills path |
 | Core setup logic | `src/core/setup.js` | Config dir resolution, skills copy, gist download, env vars |
 | Add config file downloads | `src/core/setup.js` → `CONFIG_FILES` | Array of `{filename}` copied from `configs/` directory |
 | CI pipeline | `.github/workflows/opencode.yml` | Triggers on `/oc` comment, installs code-review-graph |
