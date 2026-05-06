@@ -1,11 +1,8 @@
 {
   "name": "@mccxj/agent-standby",
   "version": "1.0.0",
-  "description": "Initialize AI agent configuration, environment variables, and skills for CI and local development",
-  "main": "src/cli-entry.js",
-  "bin": {
-    "agent-standby": "src/cli-entry.js"
-  },
+  "description": "Initialize AI agent configuration, environment variables, and skills for CI",
+  "main": "src/action-entry.js",
   "scripts": {
     "build": "ncc build src/action-entry.js -o dist --source-map --license licenses.txt",
     "prepare": "npm run build"
@@ -21,8 +18,7 @@
   "author": "mccxj",
   "license": "MIT",
   "dependencies": {
-    "@actions/core": "^1.10.1",
-    "commander": "^12.1.0"
+    "@actions/core": "^1.10.1"
   },
   "devDependencies": {
     "@vercel/ncc": "^0.38.1"

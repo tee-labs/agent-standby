@@ -4,19 +4,18 @@
 
 ## OVERVIEW
 
-`@mccxj/agent-standby` — Node.js CLI + GitHub Action that initializes AI agent configuration (OpenCode/Claude), syncs skills directories, and downloads config files from GitHub Gists. Ships as both an npm CLI (`agent-standby`) and a GitHub Action (`action.yml`).
+`@mccxj/agent-standby` — GitHub Action that initializes AI agent configuration (OpenCode/Claude), syncs skills directories, and downloads config files from GitHub Gists. Ships as a npm-packaged GitHub Action (`action.yml`).
 
 ## STRUCTURE
 
 ```
 .
 ├── action.yml              # GitHub Action definition (node20, dist/index.js)
-├── package.json            # npm package, bin: agent-standby → src/cli-entry.js
+├── package.json            # npm package
 ├── .opencode.json          # MCP server config (code-review-graph)
 ├── configs/                # Local agent config files (AGENTS.md, opencode.jsonc, oh-my-openagent.json)
 ├── src/
-│   ├── action-entry.js     # GitHub Actions entry (@actions/core)
-│   ├── cli-entry.js        # CLI entry (commander)
+│   ├── action-entry.js     # GitHub Actions entry (@actions/core), also for local use
 │   └── core/
 │       └── setup.js        # Core logic: agent config, skills sync, gist download
 ├── skills/                 # Agent skills ecosystem (PUA, review, explore, debug, refactor)
@@ -45,7 +44,6 @@
 | Task | Location | Notes |
 |------|----------|-------|
 | Add/modify skills | `skills/<name>/SKILL.md` | Each skill has frontmatter (name, description, license) |
-| Change CLI behavior | `src/cli-entry.js` | Uses commander, entry via `-a` (agent) and `-s` (skills) |
 | Change Action behavior | `src/action-entry.js` | Uses @actions/core, reads `agent_type` and `skills_path` inputs |
 | Core setup logic | `src/core/setup.js` | Config dir resolution, skills copy, gist download, env vars |
 | Add config file downloads | `src/core/setup.js` → `CONFIG_FILES` | Array of `{filename}` copied from `configs/` directory |
@@ -56,7 +54,7 @@
 
 - **Node.js ≥18**, ES modules via `require()` (CommonJS)
 - **Build**: `ncc build src/action-entry.js -o dist` — bundles to single file for Action
-- **npm publish**: `dist/` is committed (needed for Action users), `src/` is in `.npmignore`
+- **npm publish**: `dist/` is committed (needed for Action users)
 - **Skills**: Each has YAML frontmatter with `name`, `description`, `license: MIT`
 - **Skills sync**: Copied to `~/.opencode/skills/` or `~/.claude/skills/` based on agent type
 - **Config dirs**: opencode → `~/.opencode/`, claude → `~/.claude/`
@@ -74,12 +72,11 @@
 ```bash
 npm install          # install deps + runs build (prepare script)
 npm run build        # ncc bundle → dist/
-npx agent-standby    # run CLI locally
 ```
 
 ## GOTCHAS
 
-- `dist/` is committed to repo (Action users need it) but `src/` is npmignored
+- `dist/` is committed to repo (Action users need it)
 - `.claude/skills/` mirrors `skills/` for Claude compatibility — keep in sync
 - `writeAgentConfig()` in setup.js is commented out (line 134) — config comes from local `configs/` directory
 - `skills/pua/references/` has 20+ methodology files — only read when PUA skill is active

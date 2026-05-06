@@ -4,7 +4,7 @@
 [![GitHub Release](https://img.shields.io/github/v/release/mccxj/agent-standby)](https://github.com/mccxj/agent-standby/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
 
-Initialize AI agent configuration, environment variables, and skills for CI and local development. Supports [OpenCode](https://opencode.ai) and [Claude](https://claude.ai) agents.
+Initialize AI agent configuration, environment variables, and skills for CI. Supports [OpenCode](https://opencode.ai) and [Claude](https://claude.ai) agents.
 
 ## What It Does
 
@@ -14,7 +14,7 @@ Initialize AI agent configuration, environment variables, and skills for CI and 
 2. **Copies config files** — copies agent configuration (AGENTS.md, opencode.jsonc, oh-my-openagent.json) from the local `configs/` directory
 3. **Sets environment variables** — exports paths for downstream CI steps
 
-## Installation
+## Usage
 
 ### As a GitHub Action
 
@@ -33,25 +33,20 @@ With custom options:
     skills_path: ./skills  # path to your skills directory
 ```
 
-### As a CLI
+### Local Usage
+
+For local development, clone the repo and call the action entry point directly:
 
 ```bash
-npx @mccxj/agent-standby
+node src/action-entry.js
 ```
 
-With options:
+## Inputs / Environment Variables
 
-```bash
-npx @mccxj/agent-standby --agent opencode --skills ./skills
-npx @mccxj/agent-standby --agent claude --skills /path/to/skills
-```
-
-## Options
-
-| Option | CLI Flag | Action Input | Default | Description |
-|--------|----------|--------------|---------|-------------|
-| Agent type | `-a, --agent` | `agent_type` | `opencode` | `opencode` or `claude` |
-| Skills path | `-s, --skills` | `skills_path` | `./skills` | Path to skills directory |
+| Input | Environment Variable | Default | Description |
+|-------|---------------------|---------|-------------|
+| `agent_type` | `AGENT_TYPE` | `opencode` | `opencode` or `claude` |
+| `skills_path` | `SKILLS_PATH` | `./skills` | Path to skills directory |
 
 ## Outputs (GitHub Action)
 
@@ -99,11 +94,10 @@ npx @mccxj/agent-standby --agent claude --skills /path/to/skills
 ```
 .
 ├── action.yml              # GitHub Action definition
-├── package.json            # npm package (bin: agent-standby)
+├── package.json            # npm package
 ├── configs/                # Local agent config files (AGENTS.md, opencode.jsonc, oh-my-openagent.json)
 ├── src/
-│   ├── action-entry.js     # GitHub Actions entry point
-│   ├── cli-entry.js        # CLI entry point (commander)
+│   ├── action-entry.js     # GitHub Actions entry point (also for local use)
 │   └── core/
 │       └── setup.js        # Core logic: skills sync, config copy
 ├── skills/                 # Agent skills ecosystem
@@ -162,14 +156,11 @@ npm install
 
 # Build (bundles to dist/ via ncc)
 npm run build
-
-# Run CLI locally
-npx agent-standby
 ```
 
 ### Build
 
-The project uses [`@vercel/ncc`](https://github.com/vercel/ncc) to bundle `src/action-entry.js` into a single `dist/index.js` file for the GitHub Action runtime. The `dist/` directory is committed to the repo (Action users need it) while `src/` is excluded from npm via `.npmignore`.
+The project uses [`@vercel/ncc`](https://github.com/vercel/ncc) to bundle `src/action-entry.js` into a single `dist/index.js` file for the GitHub Action runtime. The `dist/` directory is committed to the repo (Action users need it).
 
 ### Release
 

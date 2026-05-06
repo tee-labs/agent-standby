@@ -1,15 +1,14 @@
-# SRC — Entry Points
+# SRC — Entry Point
 
 ## OVERVIEW
 
-Two entry points sharing core setup logic via `src/core/setup.js`.
+Single entry point for both GitHub Actions and local execution via `src/action-entry.js`.
 
 ## STRUCTURE
 
 ```
 src/
-├── action-entry.js     # GitHub Actions entry
-├── cli-entry.js        # CLI entry (commander)
+├── action-entry.js     # GitHub Actions entry (also for local use)
 └── core/
     └── setup.js        # Shared core logic
 ```
@@ -19,10 +18,10 @@ src/
 | File | Purpose | Key exports |
 |------|---------|-------------|
 | `action-entry.js` | GitHub Action entry via `@actions/core` | `run()` — reads `agent_type`/`skills_path` inputs, calls `setup()`, sets outputs |
-| `cli-entry.js` | CLI entry via `commander` | `-a/--agent` (opencode\|claude), `-s/--skills` path, calls `setup()` |
 
 ## CONVENTIONS
 
 - CommonJS (`require()`) throughout
-- Both entry points are thin — all logic delegates to `setup()`
-- `cli-entry.js` has shebang (`#!/usr/bin/env node`) for direct execution
+- Entry point is thin — all logic delegates to `setup()`
+- For local use: `node src/action-entry.js` (reads from env vars or defaults)
+

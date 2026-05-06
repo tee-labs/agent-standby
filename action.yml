@@ -1,5 +1,5 @@
 name: 'Agent Standby'
-description: 'Initialize AI agent configuration, environment variables, and skills for CI and local development'
+description: 'Initialize AI agent configuration, environment variables, and skills for CI'
 author: 'mccxj'
 
 inputs:
