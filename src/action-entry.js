@@ -1,12 +1,16 @@
 'use strict';
 
+const path = require('path');
 const core = require('@actions/core');
 const { setup } = require('./core/setup');
 
 async function run() {
   try {
     const agentType = core.getInput('agent_type') || 'opencode';
-    const skillsPath = core.getInput('skills_path') || './skills';
+    const skillsPathInput = core.getInput('skills_path');
+    const skillsPath = skillsPathInput
+      ? skillsPathInput
+      : path.join(__dirname, '..', 'skills');
 
     core.info(`Agent Standby: Setting up agent "${agentType}" with skills from "${skillsPath}"`);
 

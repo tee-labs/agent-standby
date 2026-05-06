@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 'use strict';
 
+const path = require('path');
 const { Command } = require('commander');
 const { setup, VALID_AGENT_TYPES } = require('./core/setup');
 
@@ -20,7 +21,7 @@ program
   .option(
     '-s, --skills <path>',
     'Path to skills directory',
-    './skills'
+    path.join(__dirname, '..', 'skills')
   )
   .action(async (options) => {
     try {
