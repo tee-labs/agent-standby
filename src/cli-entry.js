@@ -37,6 +37,12 @@ program
       console.log(`  Skills synced:    ${result.skillsDestination}`);
       console.log(`  Opencode config:  ${result.opencodeConfigDir}`);
       console.log(`  Environment:      ${result.isCI ? 'GitHub Actions' : 'Local'}`);
+      const cm = result.contextMode;
+      if (cm.installed) {
+        console.log(`  Context Mode:     installed (${cm.method})`);
+      } else {
+        console.log(`  Context Mode:     install failed (${cm.error})`);
+      }
       console.log('');
     } catch (error) {
       console.error(`✗ Error: ${error.message}`);
