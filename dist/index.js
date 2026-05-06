@@ -25683,11 +25683,11 @@ function resolveConfigDir(agentType) {
 }
 
 function getHomeDir() {
-  if (process.env.HOME) return process.env.HOME;
-  if (process.env.USERPROFILE) return process.env.USERPROFILE;
-  if (process.env.HOMEDRIVE && process.env.HOMEPATH) {
-    return process.env.HOMEDRIVE + process.env.HOMEPATH;
-  }
+  // if (process.env.HOME) return process.env.HOME;
+  // if (process.env.USERPROFILE) return process.env.USERPROFILE;
+  // if (process.env.HOMEDRIVE && process.env.HOMEPATH) {
+  //   return process.env.HOMEDRIVE + process.env.HOMEPATH;
+  // }
   return os.homedir();
 }
 
