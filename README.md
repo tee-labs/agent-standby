@@ -12,7 +12,8 @@ Initialize AI agent configuration, environment variables, and skills for CI. Sup
 
 1. **Syncs skills** — copies skill directories to the agent's config folder
 2. **Copies config files** — copies agent configuration (AGENTS.md, opencode.jsonc, oh-my-openagent.json) from the local `configs/` directory
-3. **Sets environment variables** — exports paths for downstream CI steps
+3. **Replaces env placeholders** — optionally replaces `{env:VAR}` placeholders in config files with actual values (from environment variables or interactive prompts)
+4. **Sets environment variables** — exports paths for downstream CI steps
 
 ## Usage
 
@@ -31,6 +32,7 @@ With custom options:
   with:
     agent_type: claude     # or "opencode" (default)
     skills_path: ./skills  # path to your skills directory
+    replace_env: true      # replace {env:VAR} placeholders in config files
 ```
 
 ### Local Usage
@@ -41,12 +43,19 @@ For local development, clone the repo and call the action entry point directly:
 node src/action-entry.js
 ```
 
+With env replacement enabled:
+
+```bash
+node src/action-entry.js --replace-env
+```
+
 ## Inputs / Environment Variables
 
 | Input | Environment Variable | Default | Description |
 |-------|---------------------|---------|-------------|
 | `agent_type` | `AGENT_TYPE` | `opencode` | `opencode` or `claude` |
 | `skills_path` | `SKILLS_PATH` | `./skills` | Path to skills directory |
+| `replace_env` | — | `false` | Replace `{env:VAR}` placeholders in config files (env var first, then interactive prompt) |
 
 ## Outputs (GitHub Action)
 
@@ -81,6 +90,15 @@ node src/action-entry.js
 │  Directory       │
 └─────────────────┘
 ```
+
+### Env Placeholder Replacement
+
+Config files in `configs/` can contain `{env:VAR_NAME}` placeholders (e.g., `{env:API_KEY}`). When `replace_env` is enabled, the action resolves each placeholder after copying:
+
+1. **Environment variable** — checks `process.env[VAR_NAME]` first
+2. **Interactive prompt** — falls back to prompting the user (allows empty input)
+
+Source files in `configs/` are never modified — only the copied destination files are updated.
 
 ### Config Directory Mapping
 
