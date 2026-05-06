@@ -38,7 +38,6 @@ runs:
       with:
         distribution: 'temurin'
         java-version: '21'
-
     # 2. 如果 lsp_java 为 true，下载并解压 jdtls
     - name: Restore JAVA_HOME and Setup jdtls
       if: ${{ inputs.lsp_java == 'true' }}
@@ -58,12 +57,10 @@ runs:
           echo "JAVA_HOME=$PREVIOUS_JAVA_HOME" >> $GITHUB_ENV
           echo "Restored JAVA_HOME to $PREVIOUS_JAVA_HOME"
         fi
-
     # 3. 运行你原来的 JS 逻辑
     - name: Run JS Logic
       shell: bash
       run: node ${{ github.action_path }}/dist/index.js
-
 branding:
   icon: 'zap'
   color: 'blue'
