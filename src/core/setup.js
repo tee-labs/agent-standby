@@ -3,7 +3,10 @@
 const fs = require('fs');
 const path = require('path');
 const os = require('os');
+const readline = require('readline');
 const { execSync } = require('child_process');
+
+const ENV_PLACEHOLDER_PATTERN = /\{env:([^}]+)\}/g;
 
 const VALID_AGENT_TYPES = ['opencode', 'claude'];
 
@@ -111,7 +114,7 @@ function writeGitHubEnv(envVars) {
   fs.appendFileSync(githubEnv, lines.join(os.EOL) + os.EOL, 'utf-8');
 }
 
-function writeOpencodeConfig(configDir) {
+async function writeOpencodeConfig(configDir, replaceEnv = false) {
   fs.mkdirSync(configDir, { recursive: true });
 
   for (const file of CONFIG_FILES) {
@@ -123,7 +126,49 @@ function writeOpencodeConfig(configDir) {
       );
     }
     fs.copyFileSync(srcPath, destPath);
+
+    if (replaceEnv) {
+      await replaceEnvPlaceholders(destPath);
+    }
   }
+}
+
+function promptUser(question) {
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+  });
+  return new Promise((resolve) => {
+    rl.question(question, (answer) => {
+      rl.close();
+      resolve(answer);
+    });
+  });
+}
+
+async function replaceEnvPlaceholders(filePath) {
+  let content = fs.readFileSync(filePath, 'utf-8');
+  const matches = content.matchAll(ENV_PLACEHOLDER_PATTERN);
+  const seen = new Set();
+
+  for (const match of matches) {
+    const varName = match[1];
+    if (seen.has(varName)) continue;
+    seen.add(varName);
+
+    let value = process.env[varName];
+    if (value === undefined || value === '') {
+      const answer = await promptUser(
+        `Enter value for ${varName} (leave empty to skip): `
+      );
+      value = answer;
+    }
+
+    const placeholder = `{env:${varName}}`;
+    content = content.split(placeholder).join(value);
+  }
+
+  fs.writeFileSync(filePath, content, 'utf-8');
 }
 
 function ensureContextMode() {
@@ -144,6 +189,7 @@ async function setup(options = {}) {
   const agentType = normalizeAgentType(options.agentType);
   const skillsPath = resolveSkillsPath(options.skillsPath);
   const configDir = resolveConfigDir(agentType);
+  const replaceEnv = options.replaceEnv === true;
 
   const skillsBaseDir = agentType === 'opencode'
     ? path.join(getHomeDir(), OPENCODE_CONFIG_DIR_NAME)
@@ -155,7 +201,7 @@ async function setup(options = {}) {
   //writeAgentConfig(configDir, agentType);
 
   const opencodeConfigDir = path.join(getHomeDir(), OPENCODE_CONFIG_DIR_NAME);
-  writeOpencodeConfig(opencodeConfigDir);
+  await writeOpencodeConfig(opencodeConfigDir, replaceEnv);
 
   const contextMode = ensureContextMode();
 
@@ -188,6 +234,7 @@ module.exports = {
   isGitHubActions,
   writeGitHubEnv,
   writeOpencodeConfig,
+  replaceEnvPlaceholders,
   copyDirectory,
   ensureContextMode,
   VALID_AGENT_TYPES,

@@ -25652,7 +25652,10 @@ module.exports = {
 const fs = __nccwpck_require__(9896);
 const path = __nccwpck_require__(6928);
 const os = __nccwpck_require__(857);
+const readline = __nccwpck_require__(3785);
 const { execSync } = __nccwpck_require__(5317);
+
+const ENV_PLACEHOLDER_PATTERN = /\{env:([^}]+)\}/g;
 
 const VALID_AGENT_TYPES = ['opencode', 'claude'];
 
@@ -25760,7 +25763,7 @@ function writeGitHubEnv(envVars) {
   fs.appendFileSync(githubEnv, lines.join(os.EOL) + os.EOL, 'utf-8');
 }
 
-function writeOpencodeConfig(configDir) {
+async function writeOpencodeConfig(configDir, replaceEnv = false) {
   fs.mkdirSync(configDir, { recursive: true });
 
   for (const file of CONFIG_FILES) {
@@ -25772,7 +25775,49 @@ function writeOpencodeConfig(configDir) {
       );
     }
     fs.copyFileSync(srcPath, destPath);
+
+    if (replaceEnv) {
+      await replaceEnvPlaceholders(destPath);
+    }
   }
+}
+
+function promptUser(question) {
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+  });
+  return new Promise((resolve) => {
+    rl.question(question, (answer) => {
+      rl.close();
+      resolve(answer);
+    });
+  });
+}
+
+async function replaceEnvPlaceholders(filePath) {
+  let content = fs.readFileSync(filePath, 'utf-8');
+  const matches = content.matchAll(ENV_PLACEHOLDER_PATTERN);
+  const seen = new Set();
+
+  for (const match of matches) {
+    const varName = match[1];
+    if (seen.has(varName)) continue;
+    seen.add(varName);
+
+    let value = process.env[varName];
+    if (value === undefined || value === '') {
+      const answer = await promptUser(
+        `Enter value for ${varName} (leave empty to skip): `
+      );
+      value = answer;
+    }
+
+    const placeholder = `{env:${varName}}`;
+    content = content.split(placeholder).join(value);
+  }
+
+  fs.writeFileSync(filePath, content, 'utf-8');
 }
 
 function ensureContextMode() {
@@ -25793,6 +25838,7 @@ async function setup(options = {}) {
   const agentType = normalizeAgentType(options.agentType);
   const skillsPath = resolveSkillsPath(options.skillsPath);
   const configDir = resolveConfigDir(agentType);
+  const replaceEnv = options.replaceEnv === true;
 
   const skillsBaseDir = agentType === 'opencode'
     ? path.join(getHomeDir(), OPENCODE_CONFIG_DIR_NAME)
@@ -25804,7 +25850,7 @@ async function setup(options = {}) {
   //writeAgentConfig(configDir, agentType);
 
   const opencodeConfigDir = path.join(getHomeDir(), OPENCODE_CONFIG_DIR_NAME);
-  writeOpencodeConfig(opencodeConfigDir);
+  await writeOpencodeConfig(opencodeConfigDir, replaceEnv);
 
   const contextMode = ensureContextMode();
 
@@ -25837,6 +25883,7 @@ module.exports = {
   isGitHubActions,
   writeGitHubEnv,
   writeOpencodeConfig,
+  replaceEnvPlaceholders,
   copyDirectory,
   ensureContextMode,
   VALID_AGENT_TYPES,
@@ -26014,6 +26061,14 @@ module.exports = require("perf_hooks");
 
 "use strict";
 module.exports = require("querystring");
+
+/***/ }),
+
+/***/ 3785:
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("readline");
 
 /***/ }),
 
@@ -27767,33 +27822,70 @@ var __webpack_exports__ = {};
 
 
 const path = __nccwpck_require__(6928);
-const core = __nccwpck_require__(7484);
 const { setup } = __nccwpck_require__(416);
+
+function getArg(args, flag) {
+  const idx = args.indexOf(flag);
+  if (idx !== -1 && idx + 1 < args.length) return args[idx + 1];
+  return null;
+}
+
+function hasFlag(args, flag) {
+  return args.includes(flag);
+}
 
 async function run() {
   try {
-    const agentType = core.getInput('agent_type') || 'opencode';
-    const skillsPathInput = core.getInput('skills_path');
-    const skillsPath = skillsPathInput
-      ? skillsPathInput
-      : __nccwpck_require__.ab + "skills";
+    const args = process.argv.slice(2);
+    const isCI = process.env.GITHUB_ACTIONS === 'true';
 
-    core.info(`Agent Standby: Setting up agent "${agentType}" with skills from "${skillsPath}"`);
+    let agentType, skillsPath, replaceEnv;
 
-    const result = await setup({ agentType, skillsPath });
+    if (isCI) {
+      const core = __nccwpck_require__(7484);
+      agentType = core.getInput('agent_type') || 'opencode';
+      const skillsPathInput = core.getInput('skills_path');
+      skillsPath = skillsPathInput
+        ? skillsPathInput
+        : __nccwpck_require__.ab + "skills";
+      replaceEnv = core.getBooleanInput('replace_env');
+      core.info(`Agent Standby: Setting up agent "${agentType}" with skills from "${skillsPath}"`);
+    } else {
+      agentType = getArg(args, '--agent-type') || process.env.AGENT_TYPE || 'opencode';
+      const skillsPathInput = getArg(args, '--skills-path') || process.env.SKILLS_PATH;
+      skillsPath = skillsPathInput
+        ? skillsPathInput
+        : __nccwpck_require__.ab + "skills";
+      replaceEnv = hasFlag(args, '--replace-env');
+      console.log(`Agent Standby: Setting up agent "${agentType}" with skills from "${skillsPath}"`);
+    }
 
-    core.setOutput('config_dir', result.configDir);
-    core.setOutput('skills_dir', result.skillsDestination);
-    core.setOutput('agent_type', result.agentType);
+    const result = await setup({ agentType, skillsPath, replaceEnv });
 
-    core.info(`Config directory: ${result.configDir}`);
-    core.info(`Skills synced to: ${result.skillsDestination}`);
-    core.info(`Opencode config: ${result.opencodeConfigDir}`);
-    core.info(`Environment: ${result.isCI ? 'GitHub Actions' : 'Local'}`);
-
-    core.info('Agent Standby setup completed successfully.');
+    if (isCI) {
+      const core = __nccwpck_require__(7484);
+      core.setOutput('config_dir', result.configDir);
+      core.setOutput('skills_dir', result.skillsDestination);
+      core.setOutput('agent_type', result.agentType);
+      core.info(`Config directory: ${result.configDir}`);
+      core.info(`Skills synced to: ${result.skillsDestination}`);
+      core.info(`Opencode config: ${result.opencodeConfigDir}`);
+      core.info(`Environment: ${result.isCI ? 'GitHub Actions' : 'Local'}`);
+      core.info('Agent Standby setup completed successfully.');
+    } else {
+      console.log(`Config directory: ${result.configDir}`);
+      console.log(`Skills synced to: ${result.skillsDestination}`);
+      console.log(`Opencode config: ${result.opencodeConfigDir}`);
+      console.log(`Environment: ${result.isCI ? 'GitHub Actions' : 'Local'}`);
+      console.log('Agent Standby setup completed successfully.');
+    }
   } catch (error) {
-    core.setFailed(`Agent Standby failed: ${error.message}`);
+    if (process.env.GITHUB_ACTIONS === 'true') {
+      (__nccwpck_require__(7484).setFailed)(`Agent Standby failed: ${error.message}`);
+    } else {
+      console.error(`Agent Standby failed: ${error.message}`);
+      process.exit(1);
+    }
   }
 }
 
