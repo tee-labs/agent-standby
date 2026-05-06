@@ -34,6 +34,11 @@ function resolveConfigDir(agentType) {
 }
 
 function getHomeDir() {
+  console.log(`process.env.HOME is ${process.env.HOME}`);
+  console.log(`process.env.USERPROFILE is ${process.env.USERPROFILE}`);
+  console.log(`process.env.HOMEDRIVE is ${process.env.HOMEDRIVE}`);
+  console.log(`process.env.HOMEPATH is ${process.env.HOMEPATH}`);
+  console.log(`os.homedir() is ${os.homedir()}`);
   // if (process.env.HOME) return process.env.HOME;
   // if (process.env.USERPROFILE) return process.env.USERPROFILE;
   // if (process.env.HOMEDRIVE && process.env.HOMEPATH) {
