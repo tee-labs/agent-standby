@@ -26,11 +26,11 @@
       "temperature": 0.1
     },
     "librarian": {
-      "model": "x-openai/modelscope/deepseek-ai/DeepSeek-V4-Flash",
+      "model": "x-openai/longcat/LongCat-Flash-Lite",
       "temperature": 0.1
     },
     "explore": {
-      "model": "x-openai/modelscope/deepseek-ai/DeepSeek-V4-Flash",
+      "model": "x-openai/longcat/LongCat-Flash-Lite",
       "temperature": 0.1
     },
     "multimodal-looker": {
