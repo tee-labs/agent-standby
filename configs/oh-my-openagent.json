@@ -2,81 +2,81 @@
   "$schema": "https://raw.githubusercontent.com/code-yeongyu/oh-my-opencode/dev/assets/oh-my-opencode.schema.json",
   "agents": {
     "sisyphus": {
-      "model": "x-openai/z-ai/glm-5.1",
+      "model": "x-openai/nvidia/z-ai/glm-5.1",
       "temperature": 0.1
     },
     "sisyphus-junior": {
-      "model": "x-openai/deepseek-ai/DeepSeek-V4-Flash",
+      "model": "x-openai/modelscope/deepseek-ai/DeepSeek-V4-Flash",
       "temperature": 0.1
     },
     "hephaestus": {
-      "model": "x-openai/qwen3-coder:480b",
+      "model": "x-openai/ollama/qwen3-coder:480b",
       "temperature": 0.1
     },
     "prometheus": {
-      "model": "x-openai/Sphynx",
+      "model": "x-openai/longcat/Sphynx",
       "temperature": 0.1
     },
     "atlas": {
-      "model": "x-openai/qwen3.5:397b",
+      "model": "x-openai/nvidia/qwen/qwen3.5-397b-a17b",
       "temperature": 0.1
     },
     "oracle": {
-      "model": "x-openai/minimax-m2.7",
+      "model": "x-openai/nvidia/minimaxai/minimax-m2.7",
       "temperature": 0.1
     },
     "librarian": {
-      "model": "x-openai/deepseek-ai/DeepSeek-V4-Flash",
+      "model": "x-openai/modelscope/deepseek-ai/DeepSeek-V4-Flash",
       "temperature": 0.1
     },
     "explore": {
-      "model": "x-openai/deepseek-ai/DeepSeek-V4-Flash",
+      "model": "x-openai/modelscope/deepseek-ai/DeepSeek-V4-Flash",
       "temperature": 0.1
     },
     "multimodal-looker": {
-      "model": "x-openai/minimax-m2.7",
+      "model": "x-openai/nvidia/minimaxai/minimax-m2.7",
       "temperature": 0.1
     },
     "metis": {
-      "model": "x-openai/minimax-m2.7",
+      "model": "x-openai/nvidia/minimaxai/minimax-m2.7",
       "temperature": 0.1
     },
     "momus": {
-      "model": "x-openai/minimax-m2.5",
+      "model": "x-openai/ollama/minimax-m2.5",
       "temperature": 0.1
     }
   },
   "categories": {
     "ultrabrain": {
-      "model": "x-openai/LongCat-Flash-Thinking",
+      "model": "x-openai/longcat/LongCat-Flash-Thinking",
       "temperature": 0.1
     },
     "visual-engineering": {
-      "model": "x-openai/minimax-m2.7",
+      "model": "x-openai/nvidia/minimaxai/minimax-m2.7",
       "temperature": 0.1
     },
     "quick": {
-      "model": "x-openai/deepseek-ai/DeepSeek-V4-Flash",
+      "model": "x-openai/modelscope/deepseek-ai/DeepSeek-V4-Flash",
       "temperature": 0.1
     },
     "writing": {
-      "model": "x-openai/deepseek-ai/DeepSeek-V4-Flash",
+      "model": "x-openai/modelscope/deepseek-ai/DeepSeek-V4-Flash",
       "temperature": 0.1
     },
     "deep": {
-      "model": "x-openai/Sphynx",
+      "model": "x-openai/longcat/Sphynx",
       "temperature": 0.1
     },
     "artistry": {
-      "model": "x-openai/minimax-m2.7",
+      "model": "x-openai/nvidia/minimaxai/minimax-m2.7",
       "temperature": 0.1
     },
     "unspecified-low": {
-      "model": "x-openai/deepseek-ai/DeepSeek-V4-Flash",
+      "model": "x-openai/modelscope/deepseek-ai/DeepSeek-V4-Flash",
       "temperature": 0.1
     },
     "unspecified-high": {
-      "model": "x-openai/qwen3.5:397b",
+      "model": "x-openai/nvidia/qwen/qwen3.5-397b-a17b",
       "temperature": 0.1
     }
   }
