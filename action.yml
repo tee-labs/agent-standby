@@ -61,6 +61,8 @@ runs:
     - name: Run JS Logic
       shell: bash
       run: node ${{ github.action_path }}/dist/index.js
+      env:
+        REPLACE_ENV: ${{ inputs.replace_env == 'true' }}
 branding:
   icon: 'zap'
   color: 'blue'
