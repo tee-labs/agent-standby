@@ -53,8 +53,3 @@ jobs:
           name: Latest Build
           make_latest: true
           generate_release_notes: true
-
-      - name: Publish to NPM
-        run: npm publish --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
