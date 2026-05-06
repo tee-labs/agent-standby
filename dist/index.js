@@ -25643,6 +25643,73 @@ module.exports = {
 
 /***/ }),
 
+/***/ 4077:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+"use strict";
+
+
+function getCore() {
+  if (process.env.GITHUB_ACTIONS === 'true') {
+    try {
+      return __nccwpck_require__(7484);
+    } catch {
+      return null;
+    }
+  }
+  return null;
+}
+
+const core = getCore();
+
+const logger = {
+  info(msg) {
+    if (core) {
+      core.info(msg);
+    } else {
+      console.log(msg);
+    }
+  },
+
+  warn(msg) {
+    if (core) {
+      core.warning(msg);
+    } else {
+      console.warn(msg);
+    }
+  },
+
+  error(msg) {
+    if (core) {
+      core.error(msg);
+    } else {
+      console.error(msg);
+    }
+  },
+
+  debug(msg) {
+    if (core) {
+      core.debug(msg);
+    } else {
+      console.log(`[debug] ${msg}`);
+    }
+  },
+
+  setFailed(msg) {
+    if (core) {
+      core.setFailed(msg);
+    } else {
+      console.error(msg);
+      process.exit(1);
+    }
+  },
+};
+
+module.exports = logger;
+
+
+/***/ }),
+
 /***/ 416:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
@@ -25654,6 +25721,7 @@ const path = __nccwpck_require__(6928);
 const os = __nccwpck_require__(857);
 const readline = __nccwpck_require__(3785);
 const { execSync } = __nccwpck_require__(5317);
+const logger = __nccwpck_require__(4077);
 
 const ENV_PLACEHOLDER_PATTERN = /\{env:([^}]+)\}/g;
 
@@ -25683,11 +25751,11 @@ function resolveConfigDir(agentType) {
 }
 
 function getHomeDir() {
-  console.log(`process.env.HOME is ${process.env.HOME}`);
-  console.log(`process.env.USERPROFILE is ${process.env.USERPROFILE}`);
-  console.log(`process.env.HOMEDRIVE is ${process.env.HOMEDRIVE}`);
-  console.log(`process.env.HOMEPATH is ${process.env.HOMEPATH}`);
-  console.log(`os.homedir() is ${os.homedir()}`);
+  logger.info(`process.env.HOME is ${process.env.HOME}`);
+  logger.info(`process.env.USERPROFILE is ${process.env.USERPROFILE}`);
+  logger.info(`process.env.HOMEDRIVE is ${process.env.HOMEDRIVE}`);
+  logger.info(`process.env.HOMEPATH is ${process.env.HOMEPATH}`);
+  logger.info(`os.homedir() is ${os.homedir()}`);
   // if (process.env.HOME) return process.env.HOME;
   // if (process.env.USERPROFILE) return process.env.USERPROFILE;
   // if (process.env.HOMEDRIVE && process.env.HOMEPATH) {
@@ -25735,22 +25803,6 @@ function copyDirectory(src, dest) {
     } else {
       fs.copyFileSync(srcPath, destPath);
     }
-  }
-}
-
-function writeAgentConfig(configDir, agentType) {
-  fs.mkdirSync(configDir, { recursive: true });
-
-  if (agentType === 'opencode') {
-    const configPath = path.join(configDir, 'opencode.json');
-    const config = {
-      $schema: 'https://opencode.ai/config.json',
-    };
-    fs.writeFileSync(configPath, JSON.stringify(config, null, 2), 'utf-8');
-  } else if (agentType === 'claude') {
-    const configPath = path.join(configDir, 'settings.json');
-    const config = {};
-    fs.writeFileSync(configPath, JSON.stringify(config, null, 2), 'utf-8');
   }
 }
 
@@ -25852,7 +25904,6 @@ async function setup(options = {}) {
 
   fs.mkdirSync(configDir, { recursive: true });
   copyDirectory(skillsPath, skillsDest);
-  //writeAgentConfig(configDir, agentType);
 
   const opencodeConfigDir = path.join(getHomeDir(), OPENCODE_CONFIG_DIR_NAME);
   await writeOpencodeConfig(opencodeConfigDir, replaceEnv);
@@ -27827,8 +27878,8 @@ var __webpack_exports__ = {};
 
 
 const path = __nccwpck_require__(6928);
-const os = __nccwpck_require__(857);
 const { setup } = __nccwpck_require__(416);
+const logger = __nccwpck_require__(4077);
 
 function getArg(args, flag) {
   const idx = args.indexOf(flag);
@@ -27855,12 +27906,6 @@ async function run() {
         ? skillsPathInput
         : __nccwpck_require__.ab + "skills";
       replaceEnv = core.getBooleanInput('replace_env');
-      core.info(`Agent Standby: Setting up agent "${agentType}" with skills from "${skillsPath}"`);
-      core.info(`process.env.HOME is ${process.env.HOME}`);
-      core.info(`process.env.USERPROFILE is ${process.env.USERPROFILE}`);
-      core.info(`process.env.HOMEDRIVE is ${process.env.HOMEDRIVE}`);
-      core.info(`process.env.HOMEPATH is ${process.env.HOMEPATH}`);
-      core.info(`os.homedir() is ${os.homedir()}`);
     } else {
       agentType = getArg(args, '--agent-type') || process.env.AGENT_TYPE || 'opencode';
       const skillsPathInput = getArg(args, '--skills-path') || process.env.SKILLS_PATH;
@@ -27868,8 +27913,9 @@ async function run() {
         ? skillsPathInput
         : __nccwpck_require__.ab + "skills";
       replaceEnv = hasFlag(args, '--replace-env');
-      console.log(`Agent Standby: Setting up agent "${agentType}" with skills from "${skillsPath}"`);
     }
+
+    logger.info(`Agent Standby: Setting up agent "${agentType}" with skills from "${skillsPath}"`);
 
     const result = await setup({ agentType, skillsPath, replaceEnv });
 
@@ -27878,25 +27924,15 @@ async function run() {
       core.setOutput('config_dir', result.configDir);
       core.setOutput('skills_dir', result.skillsDestination);
       core.setOutput('agent_type', result.agentType);
-      core.info(`Config directory: ${result.configDir}`);
-      core.info(`Skills synced to: ${result.skillsDestination}`);
-      core.info(`Opencode config: ${result.opencodeConfigDir}`);
-      core.info(`Environment: ${result.isCI ? 'GitHub Actions' : 'Local'}`);
-      core.info('Agent Standby setup completed successfully.');
-    } else {
-      console.log(`Config directory: ${result.configDir}`);
-      console.log(`Skills synced to: ${result.skillsDestination}`);
-      console.log(`Opencode config: ${result.opencodeConfigDir}`);
-      console.log(`Environment: ${result.isCI ? 'GitHub Actions' : 'Local'}`);
-      console.log('Agent Standby setup completed successfully.');
     }
+
+    logger.info(`Config directory: ${result.configDir}`);
+    logger.info(`Skills synced to: ${result.skillsDestination}`);
+    logger.info(`Opencode config: ${result.opencodeConfigDir}`);
+    logger.info(`Environment: ${result.isCI ? 'GitHub Actions' : 'Local'}`);
+    logger.info('Agent Standby setup completed successfully.');
   } catch (error) {
-    if (process.env.GITHUB_ACTIONS === 'true') {
-      (__nccwpck_require__(7484).setFailed)(`Agent Standby failed: ${error.message}`);
-    } else {
-      console.error(`Agent Standby failed: ${error.message}`);
-      process.exit(1);
-    }
+    logger.setFailed(`Agent Standby failed: ${error.message}`);
   }
 }
 

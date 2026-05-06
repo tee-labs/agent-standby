@@ -5,6 +5,7 @@ const path = require('path');
 const os = require('os');
 const readline = require('readline');
 const { execSync } = require('child_process');
+const logger = require('./logger');
 
 const ENV_PLACEHOLDER_PATTERN = /\{env:([^}]+)\}/g;
 
@@ -34,11 +35,11 @@ function resolveConfigDir(agentType) {
 }
 
 function getHomeDir() {
-  console.log(`process.env.HOME is ${process.env.HOME}`);
-  console.log(`process.env.USERPROFILE is ${process.env.USERPROFILE}`);
-  console.log(`process.env.HOMEDRIVE is ${process.env.HOMEDRIVE}`);
-  console.log(`process.env.HOMEPATH is ${process.env.HOMEPATH}`);
-  console.log(`os.homedir() is ${os.homedir()}`);
+  logger.info(`process.env.HOME is ${process.env.HOME}`);
+  logger.info(`process.env.USERPROFILE is ${process.env.USERPROFILE}`);
+  logger.info(`process.env.HOMEDRIVE is ${process.env.HOMEDRIVE}`);
+  logger.info(`process.env.HOMEPATH is ${process.env.HOMEPATH}`);
+  logger.info(`os.homedir() is ${os.homedir()}`);
   // if (process.env.HOME) return process.env.HOME;
   // if (process.env.USERPROFILE) return process.env.USERPROFILE;
   // if (process.env.HOMEDRIVE && process.env.HOMEPATH) {
@@ -86,22 +87,6 @@ function copyDirectory(src, dest) {
     } else {
       fs.copyFileSync(srcPath, destPath);
     }
-  }
-}
-
-function writeAgentConfig(configDir, agentType) {
-  fs.mkdirSync(configDir, { recursive: true });
-
-  if (agentType === 'opencode') {
-    const configPath = path.join(configDir, 'opencode.json');
-    const config = {
-      $schema: 'https://opencode.ai/config.json',
-    };
-    fs.writeFileSync(configPath, JSON.stringify(config, null, 2), 'utf-8');
-  } else if (agentType === 'claude') {
-    const configPath = path.join(configDir, 'settings.json');
-    const config = {};
-    fs.writeFileSync(configPath, JSON.stringify(config, null, 2), 'utf-8');
   }
 }
 
@@ -203,7 +188,6 @@ async function setup(options = {}) {
 
   fs.mkdirSync(configDir, { recursive: true });
   copyDirectory(skillsPath, skillsDest);
-  //writeAgentConfig(configDir, agentType);
 
   const opencodeConfigDir = path.join(getHomeDir(), OPENCODE_CONFIG_DIR_NAME);
   await writeOpencodeConfig(opencodeConfigDir, replaceEnv);
