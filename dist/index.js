@@ -25793,7 +25793,11 @@ async function setup(options = {}) {
   const agentType = normalizeAgentType(options.agentType);
   const skillsPath = resolveSkillsPath(options.skillsPath);
   const configDir = resolveConfigDir(agentType);
-  const skillsDest = path.join(configDir, 'skills');
+
+  const skillsBaseDir = agentType === 'opencode'
+    ? path.join(getHomeDir(), OPENCODE_CONFIG_DIR_NAME)
+    : configDir;
+  const skillsDest = path.join(skillsBaseDir, 'skills');
 
   fs.mkdirSync(configDir, { recursive: true });
   copyDirectory(skillsPath, skillsDest);
