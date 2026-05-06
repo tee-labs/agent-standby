@@ -29,6 +29,11 @@ async function run() {
         : path.join(__dirname, '..', 'skills');
       replaceEnv = core.getBooleanInput('replace_env');
       core.info(`Agent Standby: Setting up agent "${agentType}" with skills from "${skillsPath}"`);
+      core.info(`process.env.HOME is ${process.env.HOME}`);
+      core.info(`process.env.USERPROFILE is ${process.env.USERPROFILE}`);
+      core.info(`process.env.HOMEDRIVE is ${process.env.HOMEDRIVE}`);
+      core.info(`process.env.HOMEPATH is ${process.env.HOMEPATH}`);
+      core.info(`os.homedir() is ${os.homedir()}`);
     } else {
       agentType = getArg(args, '--agent-type') || process.env.AGENT_TYPE || 'opencode';
       const skillsPathInput = getArg(args, '--skills-path') || process.env.SKILLS_PATH;
