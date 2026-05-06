@@ -444,5 +444,14 @@
       "type": "local",
       "command": ["npx", "-y", "context-mode"]
     }
+  },
+  "lsp": {
+    "jdtls": {
+      "disabled": false,
+      "command": ["jdtls"],
+      "env": {
+        "JAVA_HOME": "/usr/lib/jvm/java-21-openjdk-amd64"
+      }
+    }
   }
 }
