@@ -27762,13 +27762,17 @@ var __webpack_exports__ = {};
 "use strict";
 
 
+const path = __nccwpck_require__(6928);
 const core = __nccwpck_require__(7484);
 const { setup } = __nccwpck_require__(416);
 
 async function run() {
   try {
     const agentType = core.getInput('agent_type') || 'opencode';
-    const skillsPath = core.getInput('skills_path') || './skills';
+    const skillsPathInput = core.getInput('skills_path');
+    const skillsPath = skillsPathInput
+      ? skillsPathInput
+      : __nccwpck_require__.ab + "skills";
 
     core.info(`Agent Standby: Setting up agent "${agentType}" with skills from "${skillsPath}"`);
 
