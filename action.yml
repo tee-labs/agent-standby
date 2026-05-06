@@ -11,6 +11,10 @@ inputs:
     description: 'Replace {env:VAR} placeholders in config files with environment variable values (prompts if not set)'
     required: false
     default: 'false'
+  lsp_java:
+    description: 'If true, install Java 21 and jdtls'
+    required: false
+    default: 'false'
 
 outputs:
   config_dir:
@@ -21,8 +25,44 @@ outputs:
     description: 'The agent type that was configured'
 
 runs:
-  using: 'node20'
-  main: 'dist/index.js'
+  using: 'composite'
+  steps:
+    - name: Record current JAVA_HOME
+      shell: bash
+      run: |
+        echo "PREVIOUS_JAVA_HOME=$JAVA_HOME" >> $GITHUB_ENV
+    # 1. 如果 lsp_java 为 true，安装 Java 21
+    - name: Set up Java 21 for jdtls
+      if: ${{ inputs.lsp_java == 'true' }}
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin'
+        java-version: '21'
+
+    # 2. 如果 lsp_java 为 true，下载并解压 jdtls
+    - name: Restore JAVA_HOME and Setup jdtls
+      if: ${{ inputs.lsp_java == 'true' }}
+      shell: bash
+      run: |
+        JDTLS_VERSION="1.58.0"
+        JDTLS_DATE="202604151538"
+        URL="https://download.eclipse.org/jdtls/milestones/${JDTLS_VERSION}/jdtls-server-${JDTLS_VERSION}-${JDTLS_DATE}.tar.gz"
+        mkdir -p $GITHUB_ACTION_PATH/jdtls
+        curl -L $URL | tar -xzC $GITHUB_ACTION_PATH/jdtls
+        chmod +x $GITHUB_ACTION_PATH/jdtls/bin/jdtls
+        echo "JDTLS_HOME=$GITHUB_ACTION_PATH/jdtls" >> $GITHUB_ENV        
+        echo "$GITHUB_ACTION_PATH/jdtls/bin" >> $GITHUB_PATH
+
+        # 如果 PREVIOUS_JAVA_HOME 不为空，就还原它
+        if [ -n "$PREVIOUS_JAVA_HOME" ]; then
+          echo "JAVA_HOME=$PREVIOUS_JAVA_HOME" >> $GITHUB_ENV
+          echo "Restored JAVA_HOME to $PREVIOUS_JAVA_HOME"
+        fi
+
+    # 3. 运行你原来的 JS 逻辑
+    - name: Run JS Logic
+      shell: bash
+      run: node ${{ github.action_path }}/dist/index.js
 
 branding:
   icon: 'zap'
