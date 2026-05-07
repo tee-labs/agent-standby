@@ -26,11 +26,11 @@
       "temperature": 0.1
     },
     "librarian": {
-      "model": "x-openai/longcat/LongCat-Flash-Lite",
+      "model": "x-openai/ollama/minimax-m2.5",
       "temperature": 0.1
     },
     "explore": {
-      "model": "x-openai/longcat/LongCat-Flash-Lite",
+      "model": "x-openai/ollama/minimax-m2.5",
       "temperature": 0.1
     },
     "multimodal-looker": {
