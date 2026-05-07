@@ -343,6 +343,17 @@
             ]
           }
         },
+        "nvidia/moonshotai/kimi-k2.6": {
+          "name": "nvidia/moonshotai/kimi-k2.6",
+          "modalities": {
+            "input": [
+              "text"
+            ],
+            "output": [
+              "text"
+            ]
+          }
+        },
         "nvidia/minimaxai/minimax-m2.5": {
           "name": "nvidia/minimaxai/minimax-m2.5",
           "modalities": {

@@ -2,7 +2,7 @@
   "$schema": "https://raw.githubusercontent.com/code-yeongyu/oh-my-opencode/dev/assets/oh-my-opencode.schema.json",
   "agents": {
     "sisyphus": {
-      "model": "x-openai/longcat/Sphynx",
+      "model": "x-openai/nvidia/moonshotai/kimi-k2.6",
       "temperature": 0.1
     },
     "sisyphus-junior": {
@@ -14,7 +14,7 @@
       "temperature": 0.1
     },
     "prometheus": {
-      "model": "x-openai/longcat/Sphynx",
+      "model": "x-openai/nvidia/moonshotai/kimi-k2.6",
       "temperature": 0.1
     },
     "atlas": {
@@ -22,7 +22,7 @@
       "temperature": 0.1
     },
     "oracle": {
-      "model": "x-openai/nvidia/minimaxai/minimax-m2.7",
+      "model": "x-openai/nvidia/deepseek-ai/deepseek-v4-pro",
       "temperature": 0.1
     },
     "librarian": {
@@ -34,11 +34,11 @@
       "temperature": 0.1
     },
     "multimodal-looker": {
-      "model": "x-openai/nvidia/minimaxai/minimax-m2.7",
+      "model": "x-openai/nvidia/deepseek-ai/deepseek-v4-pro",
       "temperature": 0.1
     },
     "metis": {
-      "model": "x-openai/nvidia/minimaxai/minimax-m2.7",
+      "model": "x-openai/nvidia/deepseek-ai/deepseek-v4-pro",
       "temperature": 0.1
     },
     "momus": {
@@ -52,7 +52,7 @@
       "temperature": 0.1
     },
     "visual-engineering": {
-      "model": "x-openai/nvidia/minimaxai/minimax-m2.7",
+      "model": "x-openai/nvidia/deepseek-ai/deepseek-v4-pro",
       "temperature": 0.1
     },
     "quick": {
@@ -64,11 +64,11 @@
       "temperature": 0.1
     },
     "deep": {
-      "model": "x-openai/longcat/Sphynx",
+      "model": "x-openai/nvidia/moonshotai/kimi-k2.6",
       "temperature": 0.1
     },
     "artistry": {
-      "model": "x-openai/nvidia/minimaxai/minimax-m2.7",
+      "model": "x-openai/nvidia/deepseek-ai/deepseek-v4-pro",
       "temperature": 0.1
     },
     "unspecified-low": {
