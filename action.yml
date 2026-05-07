@@ -10,11 +10,11 @@ inputs:
   replace_env:
     description: 'Replace {env:VAR} placeholders in config files with environment variable values (prompts if not set)'
     required: false
-    default: false
+    default: 'false'
   lsp_java:
     description: 'If true, install Java 21 and jdtls'
     required: false
-    default: false
+    default: 'false'
 
 outputs:
   config_dir:

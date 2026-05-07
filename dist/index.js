@@ -27896,7 +27896,7 @@ async function run() {
     if (isCI) {
       const core = __nccwpck_require__(7484);
       agentType = core.getInput('agent_type') || 'opencode';
-      replaceEnv = core.getBooleanInput('replace_env');
+      replaceEnv = core.getInput('replace_env').toLowerCase() === 'true';
     } else {
       agentType = getArg(args, '--agent-type') || process.env.AGENT_TYPE || 'opencode';
       replaceEnv = hasFlag(args, '--replace-env');
