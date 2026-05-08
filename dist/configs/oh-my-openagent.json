@@ -1,83 +1,87 @@
 {
   "$schema": "https://raw.githubusercontent.com/code-yeongyu/oh-my-opencode/dev/assets/oh-my-opencode.schema.json",
-  "agents": {
-    "sisyphus": {
-      "model": "x-openai/nvidia/moonshotai/kimi-k2.6",
-      "temperature": 0.1
+
+  "categories": {
+    "deep-reasoning": {
+      "model": "x-openai/nvidia/z-ai/glm-5.1",
+      "temperature": 0.1,
+      "reasoningEffort": "xhigh"
     },
-    "sisyphus-junior": {
-      "model": "x-openai/modelscope/deepseek-ai/DeepSeek-V4-Flash",
-      "temperature": 0.1
+
+    "general-execution": {
+      "model": "x-openai/sensenova/deepseek-v4-flash", 
+      "temperature": 0.1,
+      "reasoningEffort": "medium"
     },
-    "hephaestus": {
+
+    "quick-fix": {
       "model": "x-openai/ollama/qwen3-coder:480b",
-      "temperature": 0.1
+      "temperature": 0.1,
+      "reasoningEffort": "low"
     },
-    "prometheus": {
-      "model": "x-openai/nvidia/moonshotai/kimi-k2.6",
-      "temperature": 0.1
+
+    "information-documentation": {
+      "model": "x-openai/nvidia/deepseek-ai/deepseek-v4-flash",
+      "temperature": 0.1,
+      "reasoningEffort": "medium"
     },
-    "atlas": {
-      "model": "x-openai/nvidia/qwen/qwen3.5-397b-a17b",
-      "temperature": 0.1
-    },
-    "oracle": {
-      "model": "x-openai/nvidia/deepseek-ai/deepseek-v4-pro",
-      "temperature": 0.1
-    },
-    "librarian": {
-      "model": "x-openai/ollama/minimax-m2.5",
-      "temperature": 0.1
-    },
-    "explore": {
-      "model": "x-openai/ollama/minimax-m2.5",
-      "temperature": 0.1
-    },
-    "multimodal-looker": {
-      "model": "x-openai/nvidia/deepseek-ai/deepseek-v4-pro",
-      "temperature": 0.1
-    },
-    "metis": {
-      "model": "x-openai/nvidia/deepseek-ai/deepseek-v4-pro",
-      "temperature": 0.1
-    },
-    "momus": {
-      "model": "x-openai/ollama/minimax-m2.5",
-      "temperature": 0.1
+
+    "creative-generation": {
+      "model": "x-openai/ollama/qwen3-vl:235b",
+      "temperature": 0.7
     }
   },
-  "categories": {
-    "ultrabrain": {
-      "model": "x-openai/longcat/LongCat-Flash-Thinking",
-      "temperature": 0.1
+
+  "agents": {
+    "prometheus": { 
+      "category": "deep-reasoning", 
+      "reasoningEffort": "xhigh" 
     },
-    "visual-engineering": {
-      "model": "x-openai/nvidia/deepseek-ai/deepseek-v4-pro",
-      "temperature": 0.1
+    "metis": { 
+      "category": "deep-reasoning", 
+      "reasoningEffort": "xhigh" 
     },
-    "quick": {
-      "model": "x-openai/modelscope/deepseek-ai/DeepSeek-V4-Flash",
-      "temperature": 0.1
+    "oracle": { 
+      "category": "deep-reasoning", 
+      "reasoningEffort": "xhigh" 
     },
-    "writing": {
-      "model": "x-openai/modelscope/deepseek-ai/DeepSeek-V4-Flash",
-      "temperature": 0.1
+
+    "sisyphus": { 
+      "category": "general-execution", 
+      "reasoningEffort": "high"
     },
-    "deep": {
-      "model": "x-openai/nvidia/moonshotai/kimi-k2.6",
-      "temperature": 0.1
+    "hephaestus": { 
+      "category": "general-execution",
+      "reasoningEffort": "high",
+      "upgrade_rules": [
+        { "file_count": ">5", "category": "deep-reasoning" },
+        { "line_changes": ">200", "category": "deep-reasoning" },
+        { "keywords": ["重构", "算法", "性能优化", "安全", "并发", "JDK21", "迁移", "CAPTCHA"], "category": "deep-reasoning" }
+      ]
     },
-    "artistry": {
-      "model": "x-openai/nvidia/deepseek-ai/deepseek-v4-pro",
-      "temperature": 0.1
+    "momus": { 
+      "category": "general-execution",
+      "reasoningEffort": "high",
+      "upgrade_rules": [
+        { "keywords": ["架构评审", "技术方案", "设计文档", "审计"], "category": "deep-reasoning" }
+      ]
     },
-    "unspecified-low": {
-      "model": "x-openai/modelscope/deepseek-ai/DeepSeek-V4-Flash",
-      "temperature": 0.1
-    },
-    "unspecified-high": {
-      "model": "x-openai/nvidia/qwen/qwen3.5-397b-a17b",
-      "temperature": 0.1
-    }
-  }
+    "multimodal-looker": { "category": "creative-generation" },
+    "atlas": { "category": "general-execution" },
+    "sisyphus-junior": { "category": "general-execution" },
+    "explore": { "category": "quick-fix" },
+    "frontend": { "category": "creative-generation" },
+    "librarian": { "category": "information-documentation" }
+  },
+
+  "disabled_categories": [
+    "visual-engineering",
+    "ultrabrain",
+    "artistry",
+    "quick",
+    "unspecified-low",
+    "unspecified-high",
+    "writing",
+    "deep"
+  ]
 }
