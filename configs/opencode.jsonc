@@ -430,6 +430,39 @@
               "text"
             ]
           }
+        },
+        "sensenova/sensenova-6.7-flash-lite": {
+          "name": "sensenova/sensenova-6.7-flash-lite",
+          "modalities": {
+            "input": [
+              "text"
+            ],
+            "output": [
+              "text"
+            ]
+          }
+        },
+        "sensenova/sensenova-u1-fast": {
+          "name": "sensenova/sensenova-u1-fast",
+          "modalities": {
+            "input": [
+              "text"
+            ],
+            "output": [
+              "text"
+            ]
+          }
+        },
+        "sensenova/deepseek-v4-flash": {
+          "name": "sensenova/deepseek-v4-flash",
+          "modalities": {
+            "input": [
+              "text"
+            ],
+            "output": [
+              "text"
+            ]
+          }
         }
       },
       "npm": "@ai-sdk/openai-compatible",
