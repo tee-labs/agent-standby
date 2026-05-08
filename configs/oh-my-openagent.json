@@ -9,7 +9,7 @@
     },
 
     "general-execution": {
-      "model": "x-openai/sensenova/deepseek-v4-flash", 
+      "model": "x-openai/opencode/hy3-preview-free", 
       "temperature": 0.1,
       "reasoningEffort": "medium"
     },
