@@ -463,6 +463,18 @@
               "text"
             ]
           }
+        },
+        "opencode/hy3-preview-free": {
+          "name": "opencode/hy3-preview-free",
+          "modalities": {
+            "input": [
+              "text",
+	      "image"
+            ],
+            "output": [
+              "text"
+            ]
+          }
         }
       },
       "npm": "@ai-sdk/openai-compatible",
