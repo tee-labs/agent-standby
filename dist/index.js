@@ -25711,7 +25711,7 @@ module.exports = logger;
 /***/ }),
 
 /***/ 416:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+/***/ ((__unused_webpack_module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -25725,7 +25725,7 @@ const logger = __nccwpck_require__(4077);
 
 const ENV_PLACEHOLDER_PATTERN = /\{env:([^}]+)\}/g;
 
-const VALID_AGENT_TYPES = ['opencode', 'claude'];
+const VALID_AGENT_TYPES = (/* unused pure expression or super */ null && (['opencode', 'claude']));
 
 const AGENT_CONFIG_DIRS = {
   opencode: '.opencode',
@@ -25742,6 +25742,11 @@ const CONFIG_FILES = [
 
 function getLocalConfigDir() {
   return __nccwpck_require__.ab + "configs";
+}
+
+function getLocalPluginsDir() {
+  const pluginsDir = __nccwpck_require__.ab + "plugins";
+  return fs.existsSync(pluginsDir) ? pluginsDir : null;
 }
 
 function resolveConfigDir(agentType) {
@@ -25891,6 +25896,13 @@ async function setup(options = {}) {
   const opencodeConfigDir = path.join(getHomeDir(), OPENCODE_CONFIG_DIR_NAME);
   await writeOpencodeConfig(opencodeConfigDir, replaceEnv);
 
+  // Copy plugins to ~/.config/opencode/plugins for opencode agent
+  const pluginsSrcDir = getLocalPluginsDir();
+  if (pluginsSrcDir && agentType === 'opencode') {
+    const pluginsDestDir = path.join(opencodeConfigDir, 'plugins');
+    copyDirectory(pluginsSrcDir, pluginsDestDir);
+  }
+
   const contextMode = ensureContextMode();
 
   const result = {
@@ -25901,35 +25913,11 @@ async function setup(options = {}) {
     opencodeConfigDir,
     isCI: isGitHubActions(),
     contextMode,
+    pluginsDestination: (pluginsSrcDir && agentType === 'opencode')
+      ? path.join(opencodeConfigDir, 'plugins')
+      : null
   };
-
-  if (isGitHubActions()) {
-    writeGitHubEnv({
-      AGENT_STANDBY_CONFIG_DIR: configDir,
-      AGENT_STANDBY_AGENT_TYPE: agentType,
-      AGENT_STANDBY_SKILLS_DIR: skillsDest,
-    });
-  }
-
-  return result;
 }
-
-module.exports = {
-  setup,
-  resolveConfigDir,
-  normalizeAgentType,
-  isGitHubActions,
-  writeGitHubEnv,
-  writeOpencodeConfig,
-  replaceEnvPlaceholders,
-  copyDirectory,
-  ensureContextMode,
-  VALID_AGENT_TYPES,
-  AGENT_CONFIG_DIRS,
-  OPENCODE_CONFIG_DIR_NAME,
-  CONFIG_FILES,
-  getLocalConfigDir,
-};
 
 
 /***/ }),
@@ -27916,6 +27904,9 @@ async function run() {
     logger.info(`Config directory: ${result.configDir}`);
     logger.info(`Skills synced to: ${result.skillsDestination}`);
     logger.info(`Opencode config: ${result.opencodeConfigDir}`);
+    if (result.pluginsDestination) {
+      logger.info(`Plugins synced to: ${result.pluginsDestination}`);
+    }
     logger.info(`Environment: ${result.isCI ? 'GitHub Actions' : 'Local'}`);
     logger.info('Agent Standby setup completed successfully.');
   } catch (error) {

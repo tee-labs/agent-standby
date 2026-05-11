@@ -57,6 +57,9 @@ async function run() {
     logger.info(`Config directory: ${result.configDir}`);
     logger.info(`Skills synced to: ${result.skillsDestination}`);
     logger.info(`Opencode config: ${result.opencodeConfigDir}`);
+    if (result.pluginsDestination) {
+      logger.info(`Plugins synced to: ${result.pluginsDestination}`);
+    }
     logger.info(`Environment: ${result.isCI ? 'GitHub Actions' : 'Local'}`);
     logger.info('Agent Standby setup completed successfully.');
   } catch (error) {

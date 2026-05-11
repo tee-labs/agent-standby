@@ -28,6 +28,11 @@ function getLocalConfigDir() {
   return path.join(__dirname, '..', '..', 'configs');
 }
 
+function getLocalPluginsDir() {
+  const pluginsDir = path.join(__dirname, '..', '..', 'plugins');
+  return fs.existsSync(pluginsDir) ? pluginsDir : null;
+}
+
 function resolveConfigDir(agentType) {
   const home = getHomeDir();
   const dirName = AGENT_CONFIG_DIRS[agentType];
@@ -175,6 +180,13 @@ async function setup(options = {}) {
   const opencodeConfigDir = path.join(getHomeDir(), OPENCODE_CONFIG_DIR_NAME);
   await writeOpencodeConfig(opencodeConfigDir, replaceEnv);
 
+  // Copy plugins to ~/.config/opencode/plugins for opencode agent
+  const pluginsSrcDir = getLocalPluginsDir();
+  if (pluginsSrcDir && agentType === 'opencode') {
+    const pluginsDestDir = path.join(opencodeConfigDir, 'plugins');
+    copyDirectory(pluginsSrcDir, pluginsDestDir);
+  }
+
   const contextMode = ensureContextMode();
 
   const result = {
@@ -185,6 +197,9 @@ async function setup(options = {}) {
     opencodeConfigDir,
     isCI: isGitHubActions(),
     contextMode,
+    pluginsDestination: (pluginsSrcDir && agentType === 'opencode')
+      ? path.join(opencodeConfigDir, 'plugins')
+      : null
   };
 
   if (isGitHubActions()) {
@@ -213,4 +228,5 @@ module.exports = {
   OPENCODE_CONFIG_DIR_NAME,
   CONFIG_FILES,
   getLocalConfigDir,
+  getLocalPluginsDir,
 };
