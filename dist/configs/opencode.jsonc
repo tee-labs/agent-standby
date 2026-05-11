@@ -19,7 +19,7 @@
   },
   "logLevel": "DEBUG",
   // "enabled_providers": ["x-openai", "x-google", "x-anthropic"],
-  "small_model": "x-openai/modelscope/deepseek-ai/DeepSeek-V3.2",
+  "small_model": "x-openai/ollama/gemma4:31b",
   // curl https://airfly.dpdns.org/v1/models   -H "Authorization: Bearer APIKEY"   -H "Content-Type: application/json" | jq .data[].id | awk '{print $1":{\"name\":"$1",\"modalities\":{\"input\": [\"text\"], \"output\": [\"text\"]}},"}'
   "provider": {
     "x-openai": {
