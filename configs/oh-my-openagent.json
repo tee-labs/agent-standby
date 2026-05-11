@@ -1,6 +1,12 @@
 {
   "$schema": "https://raw.githubusercontent.com/code-yeongyu/oh-my-opencode/dev/assets/oh-my-opencode.schema.json",
 
+  "team_mode": {
+    "enabled": true,
+    "max_parallel_members": 4,
+    "tmux_visualization": true
+  },
+
   "categories": {
     "deep-reasoning": {
       "model": "x-openai/nvidia/z-ai/glm-5.1",
@@ -9,25 +15,25 @@
     },
 
     "general-execution": {
-      "model": "x-openai/opencode/hy3-preview-free", 
+      "model": "x-openai/ollama/minimax-m2.5", 
       "temperature": 0.1,
       "reasoningEffort": "medium"
     },
 
     "quick-fix": {
-      "model": "x-openai/nvidia/qwen/qwen3-coder-480b-a35b-instruct",
+      "model": "x-openai/ollama/minimax-m2.5",
       "temperature": 0.1,
       "reasoningEffort": "low"
     },
 
     "information-documentation": {
-      "model": "x-openai/nvidia/deepseek-ai/deepseek-v4-flash",
+      "model": "x-openai/ollama/gemma4:31b",
       "temperature": 0.1,
       "reasoningEffort": "medium"
     },
 
     "creative-generation": {
-      "model": "x-openai/ollama/qwen3-vl:235b",
+      "model": "x-openai/ollama/qwen3-vl:235b-instruct",
       "temperature": 0.7
     }
   },
