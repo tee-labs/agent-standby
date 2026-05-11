@@ -19,6 +19,14 @@ inputs:
     description: 'If true, install rtk CLI (https://github.com/rtk-ai/rtk)'
     required: false
     default: 'true'
+  install_crg:
+    description: 'If true, install code-review-graph (Python 3.10 required)'
+    required: false
+    default: 'true'
+  git_identity:
+    description: 'If true, configure git user.name and user.email for the agent bot'
+    required: false
+    default: 'true'
 
 outputs:
   config_dir:
@@ -63,6 +71,21 @@ runs:
     run: |
       curl -fsSL https://raw.githubusercontent.com/rtk-ai/rtk/refs/heads/master/install.sh | sh
       echo "$HOME/.local/bin" >> $GITHUB_PATH
+  - name: Set up and build code-review-graph
+    if: ${{ inputs.install_crg == 'true' }}
+    uses: actions/setup-python@v6
+    with:
+      python-version: "3.10"
+    run: |
+      pip install code-review-graph
+      code-review-graph install --platform opencode
+      code-review-graph build
+  - name: Configure Git identity
+    if: ${{ inputs.git_identity == 'true' }}
+    shell: bash
+    run: |
+      git config --global user.name "opencode-agent[bot]"
+      git config --global user.email "opencode-agent[bot]@users.noreply.github.com"
   - name: Run JS Logic
     shell: bash
     run: node ${{ github.action_path }}/dist/index.js
