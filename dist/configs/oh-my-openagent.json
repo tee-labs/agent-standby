@@ -27,7 +27,7 @@
     },
 
     "information-documentation": {
-      "model": "x-openai/nvidia/minimaxai/minimax-m2.5",
+      "model": "x-openai/ollama/minimax-m2.5",
       "temperature": 0.1,
       "reasoningEffort": "medium"
     },
