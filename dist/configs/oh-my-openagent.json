@@ -15,19 +15,19 @@
     },
 
     "general-execution": {
-      "model": "x-openai/ollama/minimax-m2.5", 
+      "model": "x-openai/nvidia/minimaxai/minimax-m2.5", 
       "temperature": 0.1,
       "reasoningEffort": "medium"
     },
 
     "quick-fix": {
-      "model": "x-openai/ollama/minimax-m2.5",
+      "model": "x-openai/nvidia/minimaxai/minimax-m2.5",
       "temperature": 0.1,
       "reasoningEffort": "low"
     },
 
     "information-documentation": {
-      "model": "x-openai/ollama/minimax-m2.5",
+      "model": "x-openai/nvidia/minimaxai/minimax-m2.5",
       "temperature": 0.1,
       "reasoningEffort": "medium"
     },
