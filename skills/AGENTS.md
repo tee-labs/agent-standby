@@ -20,6 +20,12 @@ Skills directory with YAML frontmatter (`name`, `description`, `license: MIT`). 
 | `pua-loop/` | 🇨🇳 Chinese | Autonomous iterative development loop with Oracle gate |
 | `p7/`, `p9/`, `p10/` | 🇨🇳 Chinese | Role-based hierarchy (P7 senior/P9 tech-lead/P10 CTO) |
 
+### Tool Skills (browser automation)
+
+| Skill | Description |
+|-------|-------------|
+| `playwright-cli/` | Browser automation via Playwright MCP — web testing, scraping, screenshots |
+
 ### Knowledge Graph Skills (code review/debug/refactor)
 
 | Skill | Purpose |
@@ -31,7 +37,7 @@ Skills directory with YAML frontmatter (`name`, `description`, `license: MIT`). 
 
 ## STRUCTURE
 
-Each skill: `SKILL.md` with YAML frontmatter. PUA core has `references/` subdirectory (20+ methodology files).
+Each skill: `SKILL.md` with YAML frontmatter. PUA core has `references/` subdirectory (20+ methodology files). Flat `.md` files at `skills/` root are skill stubs (not yet migrated to directories).
 
 ## CONVENTIONS
 
@@ -39,3 +45,4 @@ Each skill: `SKILL.md` with YAML frontmatter. PUA core has `references/` subdire
 - PUA references: only load when PUA skill is active (20+ files, expensive)
 - `.claude/skills/` mirrors the 4 knowledge-graph skills — keep in sync with `skills/`
 - Add new skills: create `skills/<name>/SKILL.md` with frontmatter
+- `playwright-cli/` is the only non-PUA, non-knowledge-graph skill category
