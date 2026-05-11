@@ -25711,7 +25711,7 @@ module.exports = logger;
 /***/ }),
 
 /***/ 416:
-/***/ ((__unused_webpack_module, __unused_webpack_exports, __nccwpck_require__) => {
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -25725,7 +25725,7 @@ const logger = __nccwpck_require__(4077);
 
 const ENV_PLACEHOLDER_PATTERN = /\{env:([^}]+)\}/g;
 
-const VALID_AGENT_TYPES = (/* unused pure expression or super */ null && (['opencode', 'claude']));
+const VALID_AGENT_TYPES = ['opencode', 'claude'];
 
 const AGENT_CONFIG_DIRS = {
   opencode: '.opencode',
@@ -25917,7 +25917,35 @@ async function setup(options = {}) {
       ? path.join(opencodeConfigDir, 'plugins')
       : null
   };
+
+  if (isGitHubActions()) {
+    writeGitHubEnv({
+      AGENT_STANDBY_CONFIG_DIR: configDir,
+      AGENT_STANDBY_AGENT_TYPE: agentType,
+      AGENT_STANDBY_SKILLS_DIR: skillsDest,
+    });
+  }
+
+  return result;
 }
+
+module.exports = {
+  setup,
+  resolveConfigDir,
+  normalizeAgentType,
+  isGitHubActions,
+  writeGitHubEnv,
+  writeOpencodeConfig,
+  replaceEnvPlaceholders,
+  copyDirectory,
+  ensureContextMode,
+  VALID_AGENT_TYPES,
+  AGENT_CONFIG_DIRS,
+  OPENCODE_CONFIG_DIR_NAME,
+  CONFIG_FILES,
+  getLocalConfigDir,
+  getLocalPluginsDir,
+};
 
 
 /***/ }),
