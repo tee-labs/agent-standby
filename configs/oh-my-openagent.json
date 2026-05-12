@@ -2,9 +2,9 @@
   "$schema": "https://raw.githubusercontent.com/code-yeongyu/oh-my-opencode/dev/assets/oh-my-opencode.schema.json",
 
   "team_mode": {
-    "enabled": false,
+    "enabled": true,
     "max_parallel_members": 4,
-    "tmux_visualization": true
+    "tmux_visualization": false
   },
 
   "categories": {
